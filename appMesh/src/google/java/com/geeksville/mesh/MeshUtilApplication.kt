@@ -10,8 +10,7 @@ import com.google.firebase.crashlytics.crashlytics
 import com.google.firebase.Firebase
 import dagger.hilt.android.HiltAndroidApp
 
-@HiltAndroidApp
-class MeshUtilApplication : GeeksvilleApplication() {
+open class MeshUtilApplication : GeeksvilleApplication() {
 
     override fun onCreate() {
         super.onCreate()

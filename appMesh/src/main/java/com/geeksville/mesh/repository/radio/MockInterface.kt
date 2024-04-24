@@ -187,7 +187,7 @@ class MockInterface @AssistedInject constructor(
 
             MeshProtos.FromRadio.newBuilder().apply {
                 metadata = deviceMetadata {
-                    firmwareVersion = "${BuildConfig.VERSION_NAME}.abcdefg"
+//                    firmwareVersion = "${BuildConfig.VERSION_NAME}.abcdefg"
                 }
             },
 
