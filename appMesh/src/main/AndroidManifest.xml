@@ -84,15 +84,12 @@
     <!-- hardware acceleration is required for zxing barcode lib -->
     <!--    android:icon="@mipmap/ic_launcher2"-->
     <application
-        android:name="com.geeksville.mesh.MeshUtilApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
-
         android:hardwareAccelerated="true"
         android:label="@string/app_name"
         android:localeConfig="@xml/locales_config"
-        android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -139,15 +136,9 @@
         <activity
             android:name="com.geeksville.mesh.MainTabActivity"
             android:exported="true"
-            android:icon="@mipmap/ic_launcher"
             android:launchMode="singleInstance"
-            android:roundIcon="@mipmap/ic_launcher_round"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

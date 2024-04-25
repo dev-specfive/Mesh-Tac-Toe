@@ -21,8 +21,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import com.geeksville.mesh.ConfigProtos
 import com.geeksville.mesh.R
-import com.geeksville.mesh.analytics.DataPair
 import com.geeksville.mesh.ModuleConfigProtos
+import com.geeksville.mesh.analytics.DataPair
 import com.geeksville.mesh.android.*
 import com.geeksville.mesh.databinding.SettingsFragmentBinding
 import com.geeksville.mesh.model.BTScanModel
@@ -50,8 +50,8 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
     private val bluetoothViewModel: BluetoothViewModel by activityViewModels()
     private val model: UIViewModel by activityViewModels()
 
-   /* @Inject
-    internal lateinit var locationRepository: LocationRepository*/
+    /* @Inject
+     internal lateinit var locationRepository: LocationRepository*/
 
     private val hasGps by lazy { requireContext().hasGps() }
     private val hasCompanionDeviceApi by lazy { requireContext().hasCompanionDeviceApi() }
@@ -96,7 +96,7 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
             val progress = service.updateStatus
 
             binding.updateFirmwareButton.isEnabled = enable &&
-                (progress < 0) // if currently doing an upgrade disable button
+                    (progress < 0) // if currently doing an upgrade disable button
 
             if (progress >= 0) {
                 binding.updateProgressBar.progress = progress // update partial progress
@@ -112,10 +112,12 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
                         binding.scanStatusText.setText(R.string.update_successful)
                         binding.updateProgressBar.visibility = View.GONE
                     }
+
                     SoftwareUpdateService.ProgressNotStarted -> {
                         // Do nothing - because we don't want to overwrite the status text in this case
                         binding.updateProgressBar.visibility = View.GONE
                     }
+
                     else -> {
                         GeeksvilleApplication.analytics.track(
                             "firmware_update",
@@ -176,6 +178,7 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
         when (connectionState) {
             MeshService.ConnectionState.CONNECTED ->
                 if (region.number == 0) R.string.must_set_region else R.string.connected_to
+
             MeshService.ConnectionState.DISCONNECTED -> R.string.not_connected
             MeshService.ConnectionState.DEVICE_SLEEP -> R.string.connected_sleeping
             else -> null
@@ -335,9 +338,9 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
         }
 
         // Observe receivingLocationUpdates state and update provideLocationCheckbox
-  /*      locationRepository.receivingLocationUpdates.asLiveData().observe(viewLifecycleOwner) {
-            binding.provideLocationCheckbox.isChecked = it
-        }*/
+        /*      locationRepository.receivingLocationUpdates.asLiveData().observe(viewLifecycleOwner) {
+                  binding.provideLocationCheckbox.isChecked = it
+              }*/
 
         binding.provideLocationCheckbox.setOnCheckedChangeListener { view, isChecked ->
             // Don't check the box until the system setting changes
@@ -538,12 +541,13 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
         }
     }
 
-    private fun checkBTEnabled(): Boolean = (bluetoothViewModel.enabled.value == true).also { enabled ->
-        if (!enabled) {
-            warn("Telling user bluetooth is disabled")
-            model.showSnackbar(R.string.bluetooth_disabled)
+    private fun checkBTEnabled(): Boolean =
+        (bluetoothViewModel.enabled.value == true).also { enabled ->
+            if (!enabled) {
+                warn("Telling user bluetooth is disabled")
+                model.showSnackbar(R.string.bluetooth_disabled)
+            }
         }
-    }
 
     private val updateProgressFilter = IntentFilter(SoftwareUpdateService.ACTION_UPDATE_PROGRESS)
 

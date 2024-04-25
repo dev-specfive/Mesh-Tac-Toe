@@ -11,16 +11,15 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ServiceCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.geeksville.mesh.analytics.DataPair
 import com.geeksville.mesh.android.GeeksvilleApplication
 import com.geeksville.mesh.android.Logging
 import com.geeksville.mesh.concurrent.handledLaunch
 import com.geeksville.mesh.*
 import com.geeksville.mesh.LocalOnlyProtos.LocalConfig
 import com.geeksville.mesh.LocalOnlyProtos.LocalModuleConfig
-import com.geeksville.mesh.MeshProtos.Constants
 import com.geeksville.mesh.MeshProtos.MeshPacket
 import com.geeksville.mesh.MeshProtos.ToRadio
+import com.geeksville.mesh.analytics.DataPair
 import com.geeksville.mesh.android.hasBackgroundPermission
 import com.geeksville.mesh.database.MeshLogRepository
 import com.geeksville.mesh.database.PacketRepository
@@ -398,7 +397,7 @@ class MeshService : Service(), Logging {
     ///
 
     private val deviceVersion get() = DeviceVersion(myNodeInfo?.firmwareVersion ?: "")
-    private val appVersion get() = BuildConfig.VERSION_CODE
+    private val appVersion get() = Constants.VERSION_CODE
     private val minAppVersion get() = myNodeInfo?.minAppVersion ?: 0
 
     /// Map a nodenum to a node, or throw an exception if not found

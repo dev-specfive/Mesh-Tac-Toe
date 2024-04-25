@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.geeksville.mesh.analytics.AnalyticsProvider
 import com.geeksville.mesh.util.exceptionReporter
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailabilityLight
+//import com.google.android.gms.common.ConnectionResult
+//import com.google.android.gms.common.GoogleApiAvailabilityLight
 import com.suddenh4x.ratingdialog.AppRating
 
 /**
@@ -73,10 +73,11 @@ open class GeeksvilleApplication : Application(), Logging {
 }
 
 fun Context.isGooglePlayAvailable(): Boolean {
-    return GoogleApiAvailabilityLight.getInstance()
-        .isGooglePlayServicesAvailable(this)
-        .let {
-            it != ConnectionResult.SERVICE_MISSING &&
-            it != ConnectionResult.SERVICE_INVALID
-        }
+    return false
+//    GoogleApiAvailabilityLight.getInstance()
+//        .isGooglePlayServicesAvailable(this)
+//        .let {
+//            it != ConnectionResult.SERVICE_MISSING &&
+//            it != ConnectionResult.SERVICE_INVALID
+//        }
 }

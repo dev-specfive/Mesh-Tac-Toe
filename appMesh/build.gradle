@@ -7,8 +7,6 @@ plugins {
     id 'de.mobilej.unmock'
     id 'com.google.protobuf'
     id "com.google.devtools.ksp"
-//    id "com.google.gms.google-services"
-//    id "com.google.firebase.crashlytics"
 
 }
 
@@ -57,8 +55,8 @@ android {
         google {
             dimension = 'default'
             if (useCrashlytics) {
-                apply plugin: 'com.google.gms.google-services'
-                apply plugin: 'com.google.firebase.crashlytics'
+//                apply plugin: 'com.google.gms.google-services'
+//                apply plugin: 'com.google.firebase.crashlytics'
             }
         }
     }
@@ -114,36 +112,36 @@ android {
 }
 
 // per protobuf-gradle-plugin docs, this is recommended for android
-//protobuf {
-//    protoc {
-//        artifact = "com.google.protobuf:protoc:$protobuf_version"
-//    }
-//    generateProtoTasks {
-//        all().each { task ->
-//            task.builtins {
-//                java {
-//                    // turned off for now so I can use json printing in debug panel
-//                    // use the smaller android version of the library
-//                    //option "lite"
-//                }
-//                kotlin {
-//                }
-//            }
-//        }
-//    }
-//}
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$protobuf_version"
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    // turned off for now so I can use json printing in debug panel
+                    // use the smaller android version of the library
+                    //option "lite"
+                }
+                kotlin {
+                }
+            }
+        }
+    }
+}
 
 // workaround for https://github.com/google/ksp/issues/1590
-//androidComponents {
-//    onVariants(selector().all(), { variant ->
-//        afterEvaluate {
-//            def capName = variant.name.capitalize()
-//            tasks.getByName("ksp${capName}Kotlin") {
-//                setSource(tasks.getByName("generate${capName}Proto").outputs)
-//            }
-//        }
-//    })
-//}
+androidComponents {
+    onVariants(selector().all(), { variant ->
+        afterEvaluate {
+            def capName = variant.name.capitalize()
+            tasks.getByName("ksp${capName}Kotlin") {
+                setSource(tasks.getByName("generate${capName}Proto").outputs)
+            }
+        }
+    })
+}
 
 dependencies {
 
@@ -244,9 +242,9 @@ dependencies {
     implementation 'com.github.mik3y:usb-serial-for-android:3.7.0'
 
     // For Firebase Crashlytics & Analytics
-    googleImplementation platform('com.google.firebase:firebase-bom:32.7.2')
-    googleImplementation 'com.google.firebase:firebase-crashlytics'
-    googleImplementation 'com.google.firebase:firebase-analytics'
+//    googleImplementation platform('com.google.firebase:firebase-bom:32.7.2')
+//    googleImplementation 'com.google.firebase:firebase-crashlytics'
+//    googleImplementation 'com.google.firebase:firebase-analytics'
 
     // barcode support
     // per https://github.com/journeyapps/zxing-android-embedded#older-sdk-versions for minSdkVersion 21

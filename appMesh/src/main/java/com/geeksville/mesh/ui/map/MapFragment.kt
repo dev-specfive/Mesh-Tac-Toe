@@ -59,6 +59,7 @@ import com.geeksville.mesh.ui.map.components.DownloadButton
 import com.geeksville.mesh.ui.map.components.EditWaypointDialog
 import com.geeksville.mesh.ui.components.IconButton
 import com.geeksville.mesh.ui.map.components.rememberMapViewWithLifecycle
+import com.geeksville.mesh.util.Constants
 import com.geeksville.mesh.util.SqlTileWriterExt
 import com.geeksville.mesh.util.requiredZoomLevel
 import com.geeksville.mesh.util.formatAgo
@@ -91,7 +92,6 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.io.File
 import java.text.DateFormat
-
 
 //@AndroidEntryPoint
 class MapFragment : ScreenFragment("Map Fragment"), Logging {
@@ -621,7 +621,7 @@ fun MapView(
                 factory = {
                     map.apply {
                         // Required to get online tiles
-                        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
+                        Configuration.getInstance().userAgentValue = Constants.ApplicationID
                         setTileSource(loadOnlineTileSourceBase())
                         setDestroyMode(false) // keeps map instance alive when in the background
                         isVerticalMapRepetitionEnabled = false // disables map repetition
