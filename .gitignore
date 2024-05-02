@@ -1,15 +1,23 @@
+# Android Studio
+/.idea/*
+!/.idea/codeStyles
+!/.idea/dictionaries/
+!/.idea/runConfigurations/
+*.iws
 *.iml
+
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+/app/release
+
+# Java KeyStore certificates
+*.jks
+keystore.properties
+
+# AGP profiling traces
+*.trace

@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'kotlinx-serialization'
@@ -21,7 +21,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace 'com.spark.spec5main'
+    namespace 'com.spark.app'
 
     signingConfigs {
         release {
@@ -33,11 +33,10 @@ android {
     }
     compileSdk 34
     defaultConfig {
-        applicationId "com.spark.spec5mian"
-        minSdkVersion 26 // The oldest emulator image I have tried is 22 (though 21 probably works)
+//        applicationId "com.spark.app"
+        minSdkVersion 21 // The oldest emulator image I have tried is 22 (though 21 probably works)
         targetSdk 33
-        versionCode 30221 // format is Mmmss (where M is 1+the numeric major number
-        versionName "2.2.21"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // per https://developer.android.com/studio/write/vector-asset-studio
@@ -46,46 +45,51 @@ android {
     flavorDimensions = ['default']
     productFlavors {
         fdroid {
+//            applicationId "com.spark.app"
+
+            versionCode 30221 // format is Mmmss (where M is 1+the numeric major number
+            versionName "2.2.21"
+
             dimension = 'default'
-            dependenciesInfo {
-                includeInApk = false
-            }
+//            dependenciesInfo {
+//                includeInApk = false
+//            }
         }
         google {
             dimension = 'default'
             if (useCrashlytics) {
-//                apply plugin: 'com.google.gms.google-services'
-//                apply plugin: 'com.google.firebase.crashlytics'
+                apply plugin: 'com.google.gms.google-services'
+                apply plugin: 'com.google.firebase.crashlytics'
             }
         }
     }
-    buildTypes {
-        release {
-            if (keystoreProperties['storeFile']) {
-                signingConfig signingConfigs.release
-            }
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            pseudoLocalesEnabled true
-        }
-    }
-    defaultConfig {
-        // We have to list all translated languages here, because some of our libs have bogus languages that google play
-        // doesn't like and we need to strip them (gr)
-        resConfigs "bg", "cs", "de", "el", "en", "es", "fi", "fr", "fr-rHT", "ga", "hu", "is", "it", "iw", "ja", "ko", "nl", "nb", "pl", "pt", "pt-rBR", "ro", "ru", "sk", "sl", "sq", "sv", "tr", "zh", "uk"
-
-        ndk {
-            // abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-        }
-    }
-    bundle {
-        language {
-            enableSplit false
-        }
-    }
+//    buildTypes {
+//        release {
+//            if (keystoreProperties['storeFile']) {
+//                signingConfig signingConfigs.release
+//            }
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//        debug {
+//            pseudoLocalesEnabled true
+//        }
+//    }
+//    defaultConfig {
+//        // We have to list all translated languages here, because some of our libs have bogus languages that google play
+//        // doesn't like and we need to strip them (gr)
+//        resConfigs "bg", "cs", "de", "el", "en", "es", "fi", "fr", "fr-rHT", "ga", "hu", "is", "it", "iw", "ja", "ko", "nl", "nb", "pl", "pt", "pt-rBR", "ro", "ru", "sk", "sl", "sq", "sv", "tr", "zh", "uk"
+//
+//        ndk {
+//            // abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+//        }
+//    }
+//    bundle {
+//        language {
+//            enableSplit false
+//        }
+//    }
     buildFeatures {
         viewBinding true
         compose true
@@ -146,7 +150,6 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
-    implementation project(':appMesh')
     def appcompat_version = '1.6.1'
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     // For loading and tinting drawables on older versions of the platform
@@ -227,8 +230,8 @@ dependencies {
     // kotlin serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 
-//    // rate this app
-//    googleImplementation 'com.suddenh4x.ratingdialog:awesome-app-rating:2.7.0'
+    // rate this app
+    googleImplementation 'com.suddenh4x.ratingdialog:awesome-app-rating:2.7.0'
 
     // Coroutines
     def coroutines_version = '1.7.3'
@@ -236,46 +239,46 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$coroutines_version"
 
     // For now I'm not using javalite, because I want JSON printing
-//    implementation "com.google.protobuf:protobuf-kotlin:$protobuf_version"
+    implementation "com.google.protobuf:protobuf-kotlin:$protobuf_version"
 
     // For UART access
-//    implementation 'com.github.mik3y:usb-serial-for-android:3.7.0'
+    implementation 'com.github.mik3y:usb-serial-for-android:3.7.0'
 
     // For Firebase Crashlytics & Analytics
-//    googleImplementation platform('com.google.firebase:firebase-bom:32.7.2')
-//    googleImplementation 'com.google.firebase:firebase-crashlytics'
-//    googleImplementation 'com.google.firebase:firebase-analytics'
-//
-//    // barcode support
-//    // per https://github.com/journeyapps/zxing-android-embedded#older-sdk-versions for minSdkVersion 21
-//    implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
-//    //noinspection GradleDependency
-//    implementation 'com.google.zxing:core:3.3.0' // <-- don't update
-//
-//    def work_version = '2.9.0'
-//    // Work Request - used to delay boot event handling
-//    implementation "androidx.work:work-runtime-ktx:$work_version"
-//
-//    implementation "androidx.core:core-splashscreen:1.0.1"
-//
-//    // CompletableFuture backport for API 14+
-//    implementation 'net.sourceforge.streamsupport:streamsupport-minifuture:1.7.4'
-//
-//    // App intro
-//    implementation 'com.github.AppIntro:AppIntro:6.3.1'
-//
-//    // MQTT
-//    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5"
-//
-//    implementation("androidx.navigation:navigation-fragment-ktx:2.7.2")
+    googleImplementation platform('com.google.firebase:firebase-bom:32.7.2')
+    googleImplementation 'com.google.firebase:firebase-crashlytics'
+    googleImplementation 'com.google.firebase:firebase-analytics'
+
+    // barcode support
+    // per https://github.com/journeyapps/zxing-android-embedded#older-sdk-versions for minSdkVersion 21
+    implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
+    //noinspection GradleDependency
+    implementation 'com.google.zxing:core:3.3.0' // <-- don't update
+
+    def work_version = '2.9.0'
+    // Work Request - used to delay boot event handling
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
+    implementation "androidx.core:core-splashscreen:1.0.1"
+
+    // CompletableFuture backport for API 14+
+    implementation 'net.sourceforge.streamsupport:streamsupport-minifuture:1.7.4'
+
+    // App intro
+    implementation 'com.github.AppIntro:AppIntro:6.3.1'
+
+    // MQTT
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5"
+
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.2")
 
 }
 
-//ksp {
-////    arg("room.generateKotlin", "true")
-//    arg("room.schemaLocation", "$projectDir/schemas")
-//}
-//
-//repositories {
-//    maven { url "https://jitpack.io" }
-//}
+ksp {
+//    arg("room.generateKotlin", "true")
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
+}
