@@ -1,4 +1,4 @@
-package com.spark.appa.fragments.gamePlay
+package com.spark.appa.fragments
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,7 +11,6 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -22,7 +21,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.spark.app.DataPacket
 import com.spark.app.MessageStatus
 import com.spark.app.NodeInfo
@@ -36,11 +34,9 @@ import com.spark.app.service.EXTRA_SENDER_MSG_KEY
 import com.spark.app.service.InviteState
 import com.spark.app.ui.ScreenFragment
 import com.spark.app.util.GridSpacingItemDecoration
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.spark.appa.adapters.GamePlayAdapter
+import com.spark.appa.adapters.TickTacToeEnum
+import com.spark.appa.adapters.TickTackToeOptionState
 import java.util.Arrays
 
 

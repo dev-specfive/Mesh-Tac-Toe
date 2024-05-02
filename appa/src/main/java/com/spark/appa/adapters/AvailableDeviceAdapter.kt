@@ -1,4 +1,4 @@
-package com.spark.app.ui.adapters
+package com.spark.appa.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.spark.app.R
-import com.spark.app.databinding.AvailableDevicesBinding
 import com.spark.app.model.BTScanModel
+import com.spark.appa.databinding.AvailableDevicesBinding
 
 class AvailableDeviceAdapter(
     private val context: Context,

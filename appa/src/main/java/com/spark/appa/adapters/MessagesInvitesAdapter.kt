@@ -1,4 +1,4 @@
-package com.spark.app.ui.adapters
+package com.spark.appa.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,25 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.spark.app.AppOnlyProtos
 import com.spark.app.DataPacket
 import com.spark.app.MessageStatus
-import com.spark.app.NodeInfo
 import com.spark.app.R
 import com.spark.app.database.entity.Packet
-import com.spark.app.databinding.MessageInvitesItemLayoutBinding
-import com.spark.app.databinding.NearbyNodeItemLayoutBinding
 import com.spark.app.model.Channel
 import com.spark.app.model.NodeDB
-import com.spark.app.model.UIViewModel
-import com.spark.app.service.InviteState
+import com.spark.appa.databinding.MessageInvitesItemLayoutBinding
 import java.text.DateFormat
-import java.util.ArrayList
 import java.util.Date
-import java.util.Locale
 
 class MessagesInvitesAdapter(
     private val context: Context,

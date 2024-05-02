@@ -17,7 +17,7 @@ import com.spark.app.databinding.FragmentNearbyDevicesBinding
 import com.spark.app.model.UIViewModel
 import com.spark.app.service.InviteState
 import com.spark.app.ui.ScreenFragment
-import com.spark.app.ui.adapters.NearbyDeviceAdapter
+import com.spark.appa.adapters.NearbyDeviceAdapter
 
 class NearbyDevicesFragment : ScreenFragment("Nearby") {
     private lateinit var devicesAdapter: NearbyDeviceAdapter

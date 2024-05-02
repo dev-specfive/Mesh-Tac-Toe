@@ -41,7 +41,7 @@ import com.spark.app.model.primaryChannel
 import com.spark.app.service.MeshService
 import com.spark.app.ui.ScreenFragment
 import com.spark.app.ui.SettingsFragment
-import com.spark.app.ui.adapters.AvailableDeviceAdapter
+import com.spark.appa.adapters.AvailableDeviceAdapter
 import com.spark.app.util.getAssociationResult
 
 class SettingsFragment: ScreenFragment("Nearby")  {

@@ -14,7 +14,7 @@ import com.spark.app.databinding.MessagesInvitesFragmentBinding
 import com.spark.app.model.UIViewModel
 import com.spark.app.service.InviteState
 import com.spark.app.ui.ScreenFragment
-import com.spark.app.ui.adapters.MessagesInvitesAdapter
+import com.spark.appa.adapters.MessagesInvitesAdapter
 import com.spark.appa.MainTabActivity
 import kotlin.random.Random
 

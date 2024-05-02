@@ -1,4 +1,4 @@
-package com.spark.app.ui.adapters
+package com.spark.appa.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,9 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.spark.app.NodeInfo
 import com.spark.app.R
-import com.spark.app.databinding.NearbyNodeItemLayoutBinding
-import com.spark.app.model.BTScanModel
-import com.spark.app.service.InviteState
+import com.spark.appa.databinding.NearbyNodeItemLayoutBinding
 
 class NearbyDeviceAdapter(
     private val context: Context,

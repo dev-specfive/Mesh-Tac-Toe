@@ -1,12 +1,11 @@
-package com.spark.appa.fragments.gamePlay
+package com.spark.appa.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.spark.app.R
-import com.spark.app.databinding.AdapterTickToeBinding
+import com.spark.appa.R
+import com.spark.appa.databinding.AdapterTickToeBinding
+import com.spark.appa.fragments.GamePlayFragment
 import java.util.UUID
 
 
