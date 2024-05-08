@@ -34,9 +34,11 @@ class MessagesFragment : ScreenFragment("Messages") {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMessagesAdapter()
+        var msgListMap = emptyMap<String,Packet>()
         model.contacts.observe(viewLifecycleOwner) {
 //            debug("New contacts received: ${it.size}")
-            messagesAdapter.onContactsChanged(it)
+            msgListMap = it
+            messagesAdapter.onContactsChanged(msgListMap)
         }
 
         model.channels.asLiveData().observe(viewLifecycleOwner) {
@@ -49,7 +51,10 @@ class MessagesFragment : ScreenFragment("Messages") {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                messagesAdapter.filter.filter(s.toString())
+                if (s.toString().isNotEmpty()) messagesAdapter.filter.filter(s.toString())
+                else {
+                    messagesAdapter.onContactsChanged(msgListMap)
+                }
             }
         })
 

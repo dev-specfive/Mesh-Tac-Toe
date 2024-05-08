@@ -21,9 +21,7 @@ import com.spark.app.android.notificationManager
 import com.spark.app.util.PendingIntentCompat
 import java.io.Closeable
 
-interface NotificationIntentProvider {
-    fun getNotificationIntent(context: Context): PendingIntent
-}
+
 class MeshServiceNotifications(
     private val context: Context
 ) : Closeable {
@@ -107,15 +105,6 @@ class MeshServiceNotifications(
             createMessageNotification(name, message)
         )
 
-    private val openAppIntent: PendingIntent by lazy {
-        (context as? NotificationIntentProvider)?.getNotificationIntent(context)
-            ?: PendingIntent.getActivity(
-                context,
-                0,
-                Intent(context, MainActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-    }
     /**
      * Generate a bitmap from a vector drawable (even on old builds)
      * https://stackoverflow.com/questions/33696488/getting-bitmap-from-vector-drawable/#51742167
@@ -126,7 +115,7 @@ class MeshServiceNotifications(
     private fun commonBuilder(channel: String): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, channel)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setContentIntent(openAppIntent)
+//            .setContentIntent(null)
 
         // Set the notification icon
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {

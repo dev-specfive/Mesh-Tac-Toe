@@ -1,6 +1,5 @@
 package com.spark.appa
 
-import android.app.PendingIntent
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -24,6 +23,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import com.spark.app.IMeshService
+import com.spark.app.MyNodeInfo
 import com.spark.app.android.BindFailedException
 import com.spark.app.android.Logging
 import com.spark.app.android.ServiceClient
@@ -47,12 +51,6 @@ import com.spark.app.service.MeshService
 import com.spark.app.service.ServiceRepository
 import com.spark.app.service.startService
 import com.spark.app.util.Exceptions
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
-import com.spark.app.IMeshService
-import com.spark.app.MyNodeInfo
-import com.spark.app.service.NotificationIntentProvider
 import com.spark.appa.databinding.ActivityMainTabBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +60,7 @@ import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainTabActivity : AppCompatActivity(), Logging, NotificationIntentProvider {
+class MainTabActivity : AppCompatActivity(), Logging {
     private lateinit var binding: ActivityMainTabBinding
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var navHostFragment: NavHostFragment
@@ -487,12 +485,5 @@ class MainTabActivity : AppCompatActivity(), Logging, NotificationIntentProvider
 
     fun showGamePlay() {
         navController.navigate(R.id.gamepad_fragment)
-    }
-
-    override fun getNotificationIntent(context: Context): PendingIntent {
-        val intent = Intent(context, MainTabActivity::class.java)
-        // Add any extras if needed
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
     }
 }
