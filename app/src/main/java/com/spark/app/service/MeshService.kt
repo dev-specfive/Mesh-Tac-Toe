@@ -257,6 +257,10 @@ class MeshService : Service(), Logging {
             if (contains(InviteState.LEFT_GAME.title, true)) {
                 return  "${getSenderName(dataPacket)} left the game."
             }
+
+            if (contains(InviteState.INVITE_REJECTED.title, true)) {
+                return  "${getSenderName(dataPacket)} reject the invite"
+            }
         }
         return "${getSenderName(dataPacket)} made a move"
     }
@@ -1932,5 +1936,6 @@ fun updateNodeInfoTime(it: NodeInfo, rxTime: Int) {
 enum class InviteState(val title: String) {
     INVITE_SENT("invite"),
     INVITE_ACCEPTED("invite_accepted"),
-    LEFT_GAME("left_game")
+    LEFT_GAME("left_game"),
+    INVITE_REJECTED("invite_rejected")
 }

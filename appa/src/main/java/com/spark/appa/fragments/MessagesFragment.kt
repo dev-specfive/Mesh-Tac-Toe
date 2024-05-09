@@ -10,12 +10,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spark.app.database.entity.Packet
-import com.spark.app.databinding.MessagesInvitesFragmentBinding
 import com.spark.app.model.UIViewModel
 import com.spark.app.service.InviteState
 import com.spark.app.ui.ScreenFragment
 import com.spark.appa.adapters.MessagesInvitesAdapter
 import com.spark.appa.MainTabActivity
+import com.spark.appa.databinding.MessagesInvitesFragmentBinding
 import kotlin.random.Random
 
 class MessagesFragment : ScreenFragment("Messages") {
@@ -77,7 +77,16 @@ class MessagesFragment : ScreenFragment("Messages") {
                     model.setAccepted(packet.contact_key, true)
                     (activity as MainTabActivity).showGamePlay()
                     (activity as MainTabActivity).resetBadge()
-                })
+                },
+                rejectInvite = { packet ->
+                    //Invite message sent as: "invite_accepted-X-X" where first X is username and second one is random first player
+                    model.sendMessage(
+                        InviteState.INVITE_REJECTED.title,
+                        packet.contact_key
+                    )
+                    (activity as MainTabActivity).resetBadge()
+                }
+            )
             /*  devicesAdapter.setOnInviteClickListener(object :
                   NearbyDeviceAdapter.OnInviteClickListener {
                   override fun onInviteClick(contactKey: String) {
