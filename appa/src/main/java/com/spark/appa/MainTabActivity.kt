@@ -13,13 +13,16 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -71,6 +74,7 @@ class MainTabActivity : AppCompatActivity(), Logging {
     private val mainScope = CoroutineScope(Dispatchers.Main + Job())
     private var acceptedChannel: String? = null
     private var requestedChannelUrl: Uri? = null
+    private var currentFragmentID: Int = -1
 
     @Inject
     internal lateinit var serviceRepository: ServiceRepository
@@ -115,13 +119,50 @@ class MainTabActivity : AppCompatActivity(), Logging {
         NavigationUI.setupWithNavController(
             bottomNavigationView, navController
         )
+        var isConfirmedBack = true
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            supportActionBar?.setDisplayHomeAsUpEnabled(destination.id == R.id.gamepad_fragment)
-            binding.toolbar.findViewById<ImageView>(R.id.iv_spec5_icon).visibility = if (destination.id == R.id.gamepad_fragment) View.GONE else View.VISIBLE
+            currentFragmentID = destination.id
+            val isGameFragment = destination.id == R.id.gamepad_fragment
+            supportActionBar?.setDisplayHomeAsUpEnabled(isGameFragment)
+            binding.toolbar.findViewById<ImageView>(R.id.iv_spec5_icon).visibility =
+                if (isGameFragment) View.GONE else View.VISIBLE
+            binding.bottomNavigationView.visibility =
+                if (isGameFragment) View.GONE else View.VISIBLE
+            isConfirmedBack = isGameFragment
         }
         handleIntent(intent)
+
+        // Set up back press listener
+        onBackPressedDispatcher.addCallback(this) {
+            if (isConfirmedBack) {
+                showExitConfirmationDialog {
+                    isConfirmedBack = false
+                    if (currentFragmentID == R.id.gamepad_fragment) {
+                        model.sendMessage(InviteState.LEFT_GAME.title)
+                    }
+                    navController.navigateUp()
+                }
+            } else {
+                navController.navigateUp()
+            }
+        }
+
+    }
+
+    private fun showExitConfirmationDialog(onBack: () -> Unit) {
+        AlertDialog.Builder(this)
+            .setTitle("Exit Confirmation")
+            .setMessage("Are you sure you want to exit?")
+            .setPositiveButton("Yes") { dialog, which ->
+                // Handle exit action here
+                onBack.invoke()
+            }
+            .setNegativeButton("No") { dialog, which ->
+                // Do nothing, dismiss the dialog
+            }
+            .show()
     }
 
     private fun setUpToolbar() {
@@ -131,8 +172,8 @@ class MainTabActivity : AppCompatActivity(), Logging {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragmnet) as NavHostFragment).navController
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        onBackPressedDispatcher.onBackPressed()
+        return false
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -217,16 +258,20 @@ class MainTabActivity : AppCompatActivity(), Logging {
 
     private val inviteReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            bottomNavigationView.getOrCreateBadge(R.id.message_fragment).backgroundColor = ContextCompat.getColor(this@MainTabActivity,
-                R.color.badge_color
-            )
+            bottomNavigationView.getOrCreateBadge(R.id.message_fragment).backgroundColor =
+                ContextCompat.getColor(
+                    this@MainTabActivity,
+                    R.color.badge_color
+                )
         }
     }
 
-    fun resetBadge(){
-        bottomNavigationView.getOrCreateBadge(R.id.message_fragment).backgroundColor = ContextCompat.getColor(this,
-            R.color.zxing_transparent
-        )
+    fun resetBadge() {
+        bottomNavigationView.getOrCreateBadge(R.id.message_fragment).backgroundColor =
+            ContextCompat.getColor(
+                this,
+                R.color.zxing_transparent
+            )
     }
 
     private fun unbindMeshService() {
@@ -327,7 +372,8 @@ class MainTabActivity : AppCompatActivity(), Logging {
                 inviteAcceptedReceiver,
                 IntentFilter(InviteState.INVITE_ACCEPTED.title)
             )
-        LocalBroadcastManager.getInstance(this).registerReceiver(inviteReceiver, IntentFilter(InviteState.INVITE_SENT.title))
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(inviteReceiver, IntentFilter(InviteState.INVITE_SENT.title))
     }
 
     private fun bindMeshService() {
@@ -486,4 +532,5 @@ class MainTabActivity : AppCompatActivity(), Logging {
     fun showGamePlay() {
         navController.navigate(R.id.gamepad_fragment)
     }
+
 }
