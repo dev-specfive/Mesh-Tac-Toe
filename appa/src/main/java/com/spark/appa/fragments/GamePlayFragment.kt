@@ -14,12 +14,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.navigateUp
 import androidx.recyclerview.widget.GridLayoutManager
 import com.spark.app.DataPacket
 import com.spark.app.MessageStatus
@@ -163,6 +166,12 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                 .registerReceiver(
                     inviteAcceptedReceiver,
                     IntentFilter(InviteState.INVITE_ACCEPTED.title)
+                )
+
+            LocalBroadcastManager.getInstance(it)
+                .registerReceiver(
+                    leftGameReceiver,
+                    IntentFilter(InviteState.LEFT_GAME.title)
                 )
         }
     }
@@ -488,5 +497,23 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
             }
 
         }
+    }
+    private val leftGameReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let { _intent ->
+               findNavController().navigateUp()
+            }
+
+        }
+    }
+
+    private fun showLeftConfirmationDialog(onOkay: () -> Unit) {
+        AlertDialog.Builder(requireActivity())
+            .setTitle("Game leave alert")
+            .setMessage("Opponent left the game")
+            .setPositiveButton("Ok") { dialog, which ->
+                onOkay.invoke()
+            }
+            .show()
     }
 }
