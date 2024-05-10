@@ -144,7 +144,8 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     private fun updateToolbarNavigationIconColor() {
         val activity = requireActivity() as AppCompatActivity
         val toolbar = activity.findViewById<Toolbar>(R.id.toolbar)
-        toolbar.navigationIcon = context?.let { ContextCompat.getDrawable(it, R.drawable.arrow_back) }
+        toolbar.navigationIcon =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.arrow_back) }
     }
 
     override fun onDestroyView() {
@@ -265,7 +266,10 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
 
             // Set the color spans
             context?.let {
-                val color = if (greenOrBlue == "blue") ContextCompat.getColor(it, R.color.blue_tile_color) else ContextCompat.getColor(it, R.color.green_tile_color)
+                val color = if (greenOrBlue == "blue") ContextCompat.getColor(
+                    it,
+                    R.color.blue_tile_color
+                ) else ContextCompat.getColor(it, R.color.green_tile_color)
                 val colorSpan = ForegroundColorSpan(color)
                 spannableText.setSpan(
                     colorSpan,
@@ -284,7 +288,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     }
 
     private fun playIfOppenentMadeMove(index: Int) {
-        synchronized(this){
+        synchronized(this) {
             if (!lastMessageFromLocal) {
                 lastMessageFromLocal = true
                 playerTap(index)
@@ -501,7 +505,11 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     private val leftGameReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let { _intent ->
-               findNavController().navigateUp()
+                try {
+                    findNavController().navigateUp()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 
         }
