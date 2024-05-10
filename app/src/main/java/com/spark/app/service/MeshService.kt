@@ -644,7 +644,6 @@ class MeshService : Service(), Logging {
                         updateMessageNotification(dataPacket)
                         sendLocalBroadcastIfInviteAccepted(dataPacket)
                         sendLocalBroadcastIfInvited(dataPacket)
-                        sendLocalBroadcastIfLeft(dataPacket)
 //                        playSound()
                     }
 
@@ -757,14 +756,6 @@ class MeshService : Service(), Logging {
             }
         }
     }
-    private fun sendLocalBroadcastIfLeft(dataPacket: DataPacket) {
-        val splitResult = dataPacket.text
-        if (dataPacket.text?.isNotBlank() == true && splitResult.equals(InviteState.LEFT_GAME.title, true)){
-            val intent = Intent(InviteState.LEFT_GAME.title)
-            LocalBroadcastManager.getInstance(baseContext).sendBroadcast(intent)
-        }
-    }
-
 
     private fun sendLocalBroadcastIfInvited(dataPacket: DataPacket) {
         if (dataPacket.text?.equals(InviteState.INVITE_SENT.title, true) == true){

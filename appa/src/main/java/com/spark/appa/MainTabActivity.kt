@@ -128,8 +128,8 @@ class MainTabActivity : AppCompatActivity(), Logging {
             supportActionBar?.setDisplayHomeAsUpEnabled(isGameFragment)
             binding.toolbar.findViewById<ImageView>(R.id.iv_spec5_icon).visibility =
                 if (isGameFragment) View.GONE else View.VISIBLE
-//            binding.bottomNavigationView.visibility =
-//                if (isGameFragment) View.GONE else View.VISIBLE
+            binding.bottomNavigationView.visibility =
+                if (isGameFragment) View.GONE else View.VISIBLE
             isConfirmedBack = isGameFragment
         }
         handleIntent(intent)
@@ -148,23 +148,6 @@ class MainTabActivity : AppCompatActivity(), Logging {
                 navController.navigateUp()
             }
         }
-
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            if (bottomNavigationView.selectedItemId != item.itemId && currentFragmentID == R.id.gamepad_fragment) {
-                onBackPressedDispatcher.onBackPressed()
-                return@setOnItemSelectedListener false
-            } else {
-
-
-                if (currentFragmentID != R.id.nearby_fragment) {
-                    navController.navigateUp()
-                }
-
-                navController.navigate(item.itemId)
-                return@setOnItemSelectedListener true
-            }
-        }
-
 
     }
 

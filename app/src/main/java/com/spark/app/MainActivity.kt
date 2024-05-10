@@ -290,12 +290,6 @@ class MainActivity : AppCompatActivity(), Logging {
             }
         }
     }
-    private val leftGameReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-                model.setAccepted(acceptedChannel!!, true)
-                model.setContactKey(acceptedChannel!!)
-        }
-    }
 
     /** Show an alert that may contain HTML */
     private fun showAlert(titleText: Int, messageText: Int) {
