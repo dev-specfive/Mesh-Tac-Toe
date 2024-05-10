@@ -150,7 +150,7 @@ class MainTabActivity : AppCompatActivity(), Logging {
         }
 
         bottomNavigationView.setOnItemSelectedListener { item ->
-            if (bottomNavigationView.selectedItemId != item.itemId && currentFragmentID == R.id.gamepad_fragment) {
+            if (currentFragmentID == R.id.gamepad_fragment) {
                 onBackPressedDispatcher.onBackPressed()
                 return@setOnItemSelectedListener false
             } else {
@@ -159,7 +159,6 @@ class MainTabActivity : AppCompatActivity(), Logging {
                 if (currentFragmentID != R.id.nearby_fragment) {
                     navController.navigateUp()
                 }
-
                 navController.navigate(item.itemId)
                 return@setOnItemSelectedListener true
             }
