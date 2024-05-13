@@ -7,21 +7,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spark.app.database.entity.Packet
 import com.spark.app.model.UIViewModel
 import com.spark.app.service.InviteState
 import com.spark.app.ui.ScreenFragment
+import com.spark.appa.Constants.ExpirationTimeForInvite
 import com.spark.appa.adapters.MessagesInvitesAdapter
 import com.spark.appa.MainTabActivity
 import com.spark.appa.databinding.MessagesInvitesFragmentBinding
+import kotlinx.coroutines.withContext
+import java.util.Timer
+import java.util.TimerTask
 import kotlin.random.Random
 
 class MessagesFragment : ScreenFragment("Messages") {
     private lateinit var messagesAdapter: MessagesInvitesAdapter
     private lateinit var binding: MessagesInvitesFragmentBinding
     private val model: UIViewModel by activityViewModels()
+    private var timer: Timer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,12 +40,13 @@ class MessagesFragment : ScreenFragment("Messages") {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMessagesAdapter()
-        var msgListMap = emptyMap<String,Packet>()
+        var msgListMap = emptyMap<String, Packet>()
         model.contacts.observe(viewLifecycleOwner) {
 //            debug("New contacts received: ${it.size}")
             msgListMap = it
             messagesAdapter.onContactsChanged(msgListMap)
         }
+
 
         model.channels.asLiveData().observe(viewLifecycleOwner) {
             messagesAdapter.onChannelsChanged()
@@ -57,7 +64,16 @@ class MessagesFragment : ScreenFragment("Messages") {
                 }
             }
         })
-
+        timer = Timer()
+        timer?.schedule(object : TimerTask() {
+            override fun run() {
+                activity?.runOnUiThread {
+                    if (::messagesAdapter.isInitialized) {
+                        messagesAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+        },  2 * 1000, ExpirationTimeForInvite)
     }
 
     private fun initMessagesAdapter() {
@@ -102,5 +118,10 @@ class MessagesFragment : ScreenFragment("Messages") {
         val values = UIViewModel.Player.entries.toTypedArray()
         val randomIndex = Random.nextInt(values.size)
         return values[randomIndex].name
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        timer?.cancel()
     }
 }

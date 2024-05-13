@@ -14,6 +14,7 @@ import com.spark.app.R
 import com.spark.app.database.entity.Packet
 import com.spark.app.model.Channel
 import com.spark.app.model.NodeDB
+import com.spark.appa.Constants.ExpirationTimeForInvite
 import com.spark.appa.databinding.MessageInvitesItemLayoutBinding
 import java.text.DateFormat
 import java.util.Date
@@ -42,8 +43,10 @@ class MessagesInvitesAdapter(
         val packet = list[position]
         holder.deviceName.text = packet.getNameOfPacket()
         setMessageTime(holder, packet)
+        val differenceTime= System.currentTimeMillis()-packet.received_time
 
-        if (packet.isInvited()) {
+
+        if (packet.isInvited()&& (differenceTime in 0..ExpirationTimeForInvite)) {
             holder.acceptInvite.visibility = View.VISIBLE
             holder.rejectInvite.visibility = View.VISIBLE
             holder.nodeDescripiton.apply {
