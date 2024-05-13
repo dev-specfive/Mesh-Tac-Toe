@@ -23,7 +23,8 @@ class MessagesInvitesAdapter(
     private var packets: Array<Packet>,
     private var nodeDb: NodeDB,
     private var channelSet: AppOnlyProtos.ChannelSet,
-    private var acceptInvite: (Packet) -> Unit = {}
+    private var acceptInvite: (Packet) -> Unit = {},
+    private var rejectInvite: (Packet) -> Unit = {}
 ) : RecyclerView.Adapter<MessagesInvitesAdapter.ViewHolder>(), Filterable {
     private var list = packets.toList()
     private var listener: OnInviteClickListener? = null
@@ -44,6 +45,7 @@ class MessagesInvitesAdapter(
 
         if (packet.isInvited()) {
             holder.acceptInvite.visibility = View.VISIBLE
+            holder.rejectInvite.visibility = View.VISIBLE
             holder.nodeDescripiton.apply {
                 visibility = View.VISIBLE
                 text = "${packet.data.from} has invited you to join a game."
@@ -51,6 +53,7 @@ class MessagesInvitesAdapter(
             }
         } else {
             holder.acceptInvite.visibility = View.GONE
+            holder.rejectInvite.visibility = View.GONE
             holder.nodeDescripiton.apply {
                 text = ""
                 visibility = View.GONE
@@ -59,6 +62,10 @@ class MessagesInvitesAdapter(
         }
         holder.acceptInvite.setOnClickListener {
             acceptInvite.invoke(packet)
+        }
+
+        holder.rejectInvite.setOnClickListener {
+            rejectInvite.invoke(packet)
         }
 
     }
@@ -85,6 +92,7 @@ class MessagesInvitesAdapter(
         RecyclerView.ViewHolder(itemView.root) {
         val deviceName = itemView.tvNodeName
         val acceptInvite = itemView.acceptInvite
+        val rejectInvite = itemView.rejectInvite
         val nodeDescripiton = itemView.tvNodeDescription
         val messageTime = itemView.tvTime
 //        val signalView = itemView.tvSignalView
