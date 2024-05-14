@@ -7,21 +7,40 @@ import android.content.pm.ServiceInfo
 import android.media.RingtoneManager
 import android.os.IBinder
 import android.os.RemoteException
-import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ServiceCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.protobuf.ByteString
+import com.google.protobuf.InvalidProtocolBufferException
+import com.spark.app.AdminProtos
+import com.spark.app.AppOnlyProtos
+import com.spark.app.ChannelProtos
+import com.spark.app.ConfigProtos
+import com.spark.app.CoroutineDispatchers
+import com.spark.app.DataPacket
+import com.spark.app.DeviceMetrics
+import com.spark.app.EnvironmentMetrics
+import com.spark.app.IMeshService
+import com.spark.app.LocalOnlyProtos.LocalConfig
+import com.spark.app.LocalOnlyProtos.LocalModuleConfig
+import com.spark.app.MeshProtos
+import com.spark.app.MeshProtos.MeshPacket
+import com.spark.app.MeshProtos.ToRadio
+import com.spark.app.MeshUser
+import com.spark.app.MessageStatus
+import com.spark.app.ModuleConfigProtos
+import com.spark.app.MyNodeInfo
+import com.spark.app.NodeInfo
+import com.spark.app.Portnums
+import com.spark.app.Position
+import com.spark.app.R
+import com.spark.app.TelemetryProtos
 import com.spark.app.analytics.DataPair
 import com.spark.app.android.GeeksvilleApplication
 import com.spark.app.android.Logging
-import com.spark.app.concurrent.handledLaunch
-import com.spark.app.*
-import com.spark.app.LocalOnlyProtos.LocalConfig
-import com.spark.app.LocalOnlyProtos.LocalModuleConfig
-import com.spark.app.MeshProtos.Constants
-import com.spark.app.MeshProtos.MeshPacket
-import com.spark.app.MeshProtos.ToRadio
 import com.spark.app.android.hasBackgroundPermission
+import com.spark.app.concurrent.handledLaunch
+import com.spark.app.config
+import com.spark.app.copy
 import com.spark.app.database.MeshLogRepository
 import com.spark.app.database.PacketRepository
 import com.spark.app.database.entity.MeshLog
@@ -33,9 +52,12 @@ import com.spark.app.repository.network.MQTTRepository
 import com.spark.app.repository.radio.BluetoothInterface
 import com.spark.app.repository.radio.RadioInterfaceService
 import com.spark.app.repository.radio.RadioServiceConnectionState
-import com.spark.app.util.*
-import com.google.protobuf.ByteString
-import com.google.protobuf.InvalidProtocolBufferException
+import com.spark.app.routeDiscovery
+import com.spark.app.util.anonymize
+import com.spark.app.util.exceptionReporter
+import com.spark.app.util.toOneLineString
+import com.spark.app.util.toPIIString
+import com.spark.app.util.toRemoteExceptions
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import java8.util.concurrent.CompletableFuture
@@ -48,7 +70,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withTimeoutOrNull
-import java.util.*
+import java.util.Random
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
@@ -649,6 +672,7 @@ class MeshService : Service(), Logging {
                         sendLocalBroadcastIfInviteAccepted(dataPacket)
                         sendLocalBroadcastIfInvited(dataPacket)
                         sendLocalBroadcastIfLeft(dataPacket)
+                        sendLocalBroadcastIfRejected(dataPacket)
 //                        playSound()
                     }
 
@@ -765,6 +789,13 @@ class MeshService : Service(), Logging {
         val splitResult = dataPacket.text
         if (dataPacket.text?.isNotBlank() == true && splitResult.equals(InviteState.LEFT_GAME.title, true)){
             val intent = Intent(InviteState.LEFT_GAME.title)
+            LocalBroadcastManager.getInstance(baseContext).sendBroadcast(intent)
+        }
+    }
+    private fun sendLocalBroadcastIfRejected(dataPacket: DataPacket) {
+        val splitResult = dataPacket.text
+        if (dataPacket.text?.isNotBlank() == true && splitResult.equals(InviteState.INVITE_REJECTED.title, true)){
+            val intent = Intent(InviteState.INVITE_REJECTED.title)
             LocalBroadcastManager.getInstance(baseContext).sendBroadcast(intent)
         }
     }

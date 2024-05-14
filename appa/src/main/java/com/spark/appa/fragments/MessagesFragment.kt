@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spark.app.database.entity.Packet
@@ -15,10 +14,9 @@ import com.spark.app.model.UIViewModel
 import com.spark.app.service.InviteState
 import com.spark.app.ui.ScreenFragment
 import com.spark.appa.Constants.ExpirationTimeForInvite
-import com.spark.appa.adapters.MessagesInvitesAdapter
 import com.spark.appa.MainTabActivity
+import com.spark.appa.adapters.MessagesInvitesAdapter
 import com.spark.appa.databinding.MessagesInvitesFragmentBinding
-import kotlinx.coroutines.withContext
 import java.util.Timer
 import java.util.TimerTask
 import kotlin.random.Random
@@ -70,6 +68,7 @@ class MessagesFragment : ScreenFragment("Messages") {
                 activity?.runOnUiThread {
                     if (::messagesAdapter.isInitialized) {
                         messagesAdapter.notifyDataSetChanged()
+                        (activity as MainTabActivity).resetBadge()
                     }
                 }
             }

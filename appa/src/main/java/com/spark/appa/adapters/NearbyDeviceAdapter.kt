@@ -9,13 +9,20 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.spark.app.NodeInfo
 import com.spark.app.R
+import com.spark.appa.Constants
+import com.spark.appa.data.prefs.PreferencesHelperImpl
 import com.spark.appa.databinding.NearbyNodeItemLayoutBinding
+import com.spark.appa.model.NodeInvite
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class NearbyDeviceAdapter(
     private val context: Context,
-    private var devices: Array<NodeInfo>
+    private var devices: Array<NodeInfo>,
+    var pref: PreferencesHelperImpl
 ) : RecyclerView.Adapter<NearbyDeviceAdapter.ViewHolder>() {
     private var listener: OnInviteClickListener? = null
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -29,23 +36,52 @@ class NearbyDeviceAdapter(
         val node = devices[position]
         val ourNodeInfo = devices[0]
         val user = node.user
-        holder.deviceName.text = user?.longName  ?: context.getString(R.string.unknown_username)
-        println("is online: "+node.isOnline)
+        holder.deviceName.text = user?.longName ?: context.getString(R.string.unknown_username)
+        println("is online: " + node.isOnline)
         renderSignal(holder, node, ourNodeInfo)
-        holder.sendInvite.visibility =  if (node.num == ourNodeInfo.num) View.GONE else View.VISIBLE
+
+        val list = (pref.getList())
+        val nodeLastInviteSent = list.firstOrNull { it.nodeName == node.user?.longName }
+        var allowInvite = true
+        nodeLastInviteSent?.inviteSentTime?.let {
+            val differenceTime = System.currentTimeMillis() - nodeLastInviteSent.inviteSentTime
+            allowInvite = differenceTime > Constants.ExpirationTimeForInvite
+        }
+
+
+        holder.sendInvite.apply {
+            visibility = if (node.num == ourNodeInfo.num) View.GONE else View.VISIBLE
+            text = if (allowInvite) "Send Invite" else "Invite Sent"
+        }
         renderBattery(node.batteryLevel, node.voltage, holder)
         holder.sendInvite.setOnClickListener {
-            val meshUser = node.user
-            val channelId = node.channel
-            if (!meshUser?.id.isNullOrBlank()){
-                meshUser?.id?.let {
-                    userid ->
-//                    model.sendMessage(InviteState.INVITE_SENT.title, "$channelId$userid")
-                    listener?.onInviteClick("$channelId$userid")
+            if (allowInvite) {
+                val nodeInviteArrayList = (pref.getList()) as ArrayList
+                nodeInviteArrayList.removeIf { it.nodeName == node.user?.longName }
+                nodeInviteArrayList.add(
+                    NodeInvite(
+                        node.user?.longName ?: "",
+                        System.currentTimeMillis()
+                    )
+                )
+                GlobalScope.launch {
+                    pref.saveList(nodeInviteArrayList)
                 }
+                notifyItemChanged(position)
+
+                val meshUser = node.user
+                val channelId = node.channel
+                if (!meshUser?.id.isNullOrBlank()) {
+                    meshUser?.id?.let { userid ->
+//                    model.sendMessage(InviteState.INVITE_SENT.title, "$channelId$userid")
+                        listener?.onInviteClick("$channelId$userid")
+                    }
+                } else
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Invite already sent", Toast.LENGTH_SHORT).show()
+
             }
-            else
-                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -99,7 +135,8 @@ class NearbyDeviceAdapter(
         })
     }
 
-    class ViewHolder(itemView: NearbyNodeItemLayoutBinding) : RecyclerView.ViewHolder(itemView.root) {
+    class ViewHolder(itemView: NearbyNodeItemLayoutBinding) :
+        RecyclerView.ViewHolder(itemView.root) {
         val deviceName = itemView.tvNodeName
         val signalView = itemView.tvSignalView
         val sendInvite = itemView.tvSendInvite
@@ -112,6 +149,7 @@ class NearbyDeviceAdapter(
     fun setOnInviteClickListener(listener: OnInviteClickListener) {
         this.listener = listener
     }
+
     interface OnInviteClickListener {
         fun onInviteClick(contactKey: String)
     }

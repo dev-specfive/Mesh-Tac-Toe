@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "935bed00304e3ea7c0398f8e1c19992a",
+    "identityHash": "3ea902042dee8cd13450f1d33ec6e5cf",
     "entities": [
       {
         "tableName": "MyNodeInfo",
@@ -98,7 +98,7 @@
       },
       {
         "tableName": "NodeInfo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`num` INTEGER NOT NULL, `snr` REAL NOT NULL, `rssi` INTEGER NOT NULL, `lastHeard` INTEGER NOT NULL, `channel` INTEGER NOT NULL, `user_id` TEXT, `user_longName` TEXT, `user_shortName` TEXT, `user_hwModel` TEXT, `user_isLicensed` INTEGER, `position_latitude` REAL, `position_longitude` REAL, `position_altitude` INTEGER, `position_time` INTEGER, `devMetrics_time` INTEGER, `devMetrics_batteryLevel` INTEGER, `devMetrics_voltage` REAL, `devMetrics_channelUtilization` REAL, `devMetrics_airUtilTx` REAL, `envMetrics_time` INTEGER, `envMetrics_temperature` REAL, `envMetrics_relativeHumidity` REAL, `envMetrics_barometricPressure` REAL, `envMetrics_gasResistance` REAL, `envMetrics_voltage` REAL, `envMetrics_current` REAL, PRIMARY KEY(`num`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`num` INTEGER NOT NULL, `snr` REAL NOT NULL, `rssi` INTEGER NOT NULL, `lastHeard` INTEGER NOT NULL, `channel` INTEGER NOT NULL, `user_id` TEXT, `user_longName` TEXT, `user_shortName` TEXT, `user_hwModel` TEXT, `user_isLicensed` INTEGER, `user_lastInviteSent` INTEGER, `position_latitude` REAL, `position_longitude` REAL, `position_altitude` INTEGER, `position_time` INTEGER, `devMetrics_time` INTEGER, `devMetrics_batteryLevel` INTEGER, `devMetrics_voltage` REAL, `devMetrics_channelUtilization` REAL, `devMetrics_airUtilTx` REAL, `envMetrics_time` INTEGER, `envMetrics_temperature` REAL, `envMetrics_relativeHumidity` REAL, `envMetrics_barometricPressure` REAL, `envMetrics_gasResistance` REAL, `envMetrics_voltage` REAL, `envMetrics_current` REAL, PRIMARY KEY(`num`))",
         "fields": [
           {
             "fieldPath": "num",
@@ -157,6 +157,12 @@
           {
             "fieldPath": "user.isLicensed",
             "columnName": "user_isLicensed",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user.lastInviteSent",
+            "columnName": "user_lastInviteSent",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -396,7 +402,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '935bed00304e3ea7c0398f8e1c19992a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3ea902042dee8cd13450f1d33ec6e5cf')"
     ]
   }
 }

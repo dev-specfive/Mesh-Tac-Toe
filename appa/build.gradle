@@ -147,6 +147,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
     implementation project(':app')
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'com.google.code.gson:gson:2.10.1'
     def appcompat_version = '1.6.1'
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     // For loading and tinting drawables on older versions of the platform
@@ -171,16 +173,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
-
-    // Room
-//    def room_version = '2.6.1'
-//    implementation "androidx.room:room-runtime:$room_version"
-//    annotationProcessor "androidx.room:room-compiler:$room_version"
-//    ksp "androidx.room:room-compiler:$room_version"
-//    // optional - Kotlin Extensions and Coroutines support for Room
-//    implementation "androidx.room:room-ktx:$room_version"
-//    // optional - Test helpers
-//    testImplementation "androidx.room:room-testing:$room_version"
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
@@ -210,15 +202,6 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
-    // Osmdroid & Maps
-//    def osmdroid_version = '6.1.14'
-//    implementation "org.osmdroid:osmdroid-android:$osmdroid_version"
-//    implementation "org.osmdroid:osmdroid-wms:$osmdroid_version"
-//    implementation("org.osmdroid:osmdroid-geopackage:$osmdroid_version") {
-//        exclude group: 'com.j256.ormlite'
-//    }
-//    implementation 'com.github.MKergall:osmbonuspack:6.9.0'
-//    implementation('mil.nga.mgrs:mgrs-android:2.2.2') { exclude group: 'com.google.android.gms' }
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -227,9 +210,6 @@ dependencies {
     // kotlin serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 
-//    // rate this app
-//    googleImplementation 'com.suddenh4x.ratingdialog:awesome-app-rating:2.7.0'
-
     // Coroutines
     def coroutines_version = '1.7.3'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
@@ -237,35 +217,6 @@ dependencies {
 
     // For now I'm not using javalite, because I want JSON printing
     implementation "com.google.protobuf:protobuf-kotlin:$protobuf_version"
-//
-//    // For UART access
-//    implementation 'com.github.mik3y:usb-serial-for-android:3.7.0'
-
-//    // For Firebase Crashlytics & Analytics
-//    googleImplementation platform('com.google.firebase:firebase-bom:32.7.2')
-//    googleImplementation 'com.google.firebase:firebase-crashlytics'
-//    googleImplementation 'com.google.firebase:firebase-analytics'
-
-//    // barcode support
-//    // per https://github.com/journeyapps/zxing-android-embedded#older-sdk-versions for minSdkVersion 21
-//    implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
-//    //noinspection GradleDependency
-//    implementation 'com.google.zxing:core:3.3.0' // <-- don't update
-
-//    def work_version = '2.9.0'
-//    // Work Request - used to delay boot event handling
-//    implementation "androidx.work:work-runtime-ktx:$work_version"
-//
-//    implementation "androidx.core:core-splashscreen:1.0.1"
-//
-//    // CompletableFuture backport for API 14+
-//    implementation 'net.sourceforge.streamsupport:streamsupport-minifuture:1.7.4'
-
-//    // App intro
-//    implementation 'com.github.AppIntro:AppIntro:6.3.1'
-
-//    // MQTT
-//    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5"
 
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.2")
     implementation 'com.jakewharton.timber:timber:5.0.1'
@@ -273,11 +224,6 @@ dependencies {
 
 }
 
-//ksp {
-////    arg("room.generateKotlin", "true")
-//    arg("room.schemaLocation", "$projectDir/schemas")
-//}
-//
 repositories {
     maven { url "https://jitpack.io" }
 }
