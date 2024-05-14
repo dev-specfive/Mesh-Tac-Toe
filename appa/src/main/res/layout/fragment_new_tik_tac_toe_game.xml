@@ -117,7 +117,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-      </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/playerInfo"
@@ -156,13 +156,24 @@
             android:textColor="#00E978"
             android:textSize="12sp"
             android:textStyle="normal"
-            android:visibility="visible"
-            tools:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_goneMarginTop="10dp" />
+            app:layout_goneMarginTop="10dp"
+            tools:visibility="visible" />
 
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/coinFlipAnimation"
+            android:layout_width="100dp"
+            android:visibility="gone"
+            android:layout_height="100dp"
+            android:src="@drawable/coin_flip"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

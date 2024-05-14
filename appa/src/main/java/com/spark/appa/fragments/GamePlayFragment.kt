@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -29,7 +31,6 @@ import com.spark.app.MessageStatus
 import com.spark.app.NodeInfo
 import com.spark.app.R
 import com.spark.app.database.entity.Packet
-import com.spark.app.databinding.FragmentNewTikTacToeGameBinding
 import com.spark.app.model.UIViewModel
 import com.spark.app.service.EXTRA_ACCEPTED_CHANNEL_KEY
 import com.spark.app.service.EXTRA_INVITE_ACCEPTED_MSG_KEY
@@ -40,6 +41,7 @@ import com.spark.app.util.GridSpacingItemDecoration
 import com.spark.appa.adapters.GamePlayAdapter
 import com.spark.appa.adapters.TickTacToeEnum
 import com.spark.appa.adapters.TickTackToeOptionState
+import com.spark.appa.databinding.FragmentNewTikTacToeGameBinding
 import timber.log.Timber
 import java.util.Arrays
 
@@ -174,12 +176,17 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
 
     fun clickListeners() {
         _binding.playAgain.setOnClickListener {
+
             val turnSwitch = if (gameInviteAcceptMsg.equals("X", true)) "O-X" else "X-O"
             val str = "playAgain-$turnSwitch"
             gameInviteAcceptMsg = str.split("-")[1]
-            startGame(msgFrom, str.split("-"))
             model.sendMessage(str, contactKey)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                startGame(msgFrom, str.split("-"))
+            }, 5000)
         }
+
     }
 
 
@@ -375,11 +382,16 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                     if ((isInviteMessage(inviteAcceptSplit) && inviteAcceptSplit.size == 3)
                         || msgText.startsWith("playAgain")
                     ) {
-
-                        gameInviteAcceptMsg = inviteAcceptSplit[1]
-                        msgFrom = msg.from ?: ""
-                        startGame(msgFrom, inviteAcceptSplit)
-
+                        val delayForAnimation = if (msgText.startsWith("playAgain")){
+                            _binding.coinFlipAnimation.visibility= View.VISIBLE
+                            5000L
+                        } else 0L
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            _binding.coinFlipAnimation.visibility= View.GONE
+                            gameInviteAcceptMsg = inviteAcceptSplit[1]
+                            msgFrom = msg.from ?: ""
+                            startGame(msgFrom, inviteAcceptSplit)
+                        }, delayForAnimation)
                         return
                     }
 
@@ -412,6 +424,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     private var msgFrom = ""
 
     private fun startGame(msgFrom: String?, inviteAcceptSplit: List<String>) {
+        _binding.coinFlipAnimation.visibility = View.GONE
         _binding.playAgain.visibility = View.GONE
         gameReset("")
         setPlayerName(inviteAcceptSplit, msgFrom)
