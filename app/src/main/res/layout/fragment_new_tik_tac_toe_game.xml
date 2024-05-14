@@ -156,7 +156,7 @@
             android:textColor="#00E978"
             android:textSize="12sp"
             android:textStyle="normal"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

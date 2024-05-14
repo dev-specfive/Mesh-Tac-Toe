@@ -40,6 +40,7 @@ import com.spark.app.util.GridSpacingItemDecoration
 import com.spark.appa.adapters.GamePlayAdapter
 import com.spark.appa.adapters.TickTacToeEnum
 import com.spark.appa.adapters.TickTackToeOptionState
+import timber.log.Timber
 import java.util.Arrays
 
 
@@ -165,52 +166,19 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
         context?.let {
             LocalBroadcastManager.getInstance(it)
                 .registerReceiver(
-                    inviteAcceptedReceiver,
-                    IntentFilter(InviteState.INVITE_ACCEPTED.title)
-                )
-
-            LocalBroadcastManager.getInstance(it)
-                .registerReceiver(
                     leftGameReceiver,
                     IntentFilter(InviteState.LEFT_GAME.title)
                 )
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(inviteAcceptedReceiver)
-        }
-    }
-
-    private var allowPlayAgainMsgSent = true
-
     fun clickListeners() {
         _binding.playAgain.setOnClickListener {
-            drawHorizontalWinState(-1)
-
-            gameReset(_binding.tvResult.text.toString())
-            _binding.playAgain.visibility = View.GONE
-
-            if (allowPlayAgainMsgSent) {
-                model.sendMessage("playAgain", contactKey)
-                allowPlayAgainMsgSent = false
-            }
-
-            if (activePlayer == 1) {
-                _binding.tvResult.text = "O's Turn - Tap to play".switchTextBlueGreen()
-            } else {
-                _binding.tvResult.text = "X's Turn - Tap to play".switchTextBlueGreen()
-            }
-
-            if (ownPlayerName.equals("o", true) && activePlayer == 0) {
-                lastMessageFromLocal = true
-            } else {
-                lastMessageFromLocal = false
-            }
-
-
+            val turnSwitch = if (gameInviteAcceptMsg.equals("X", true)) "O-X" else "X-O"
+            val str = "playAgain-$turnSwitch"
+            gameInviteAcceptMsg = str.split("-")[1]
+            startGame(msgFrom, str.split("-"))
+            model.sendMessage(str, contactKey)
         }
     }
 
@@ -248,13 +216,13 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
 
     private fun setPlayerName(inviteMsg: List<String>, from: String?) {
         inviteMsg[1].apply {
-            ownPlayerName = if (from == DataPacket.ID_LOCAL) {
-                this
-            } else {
-                if (equals(UIViewModel.Player.X.name, true)) UIViewModel.Player.O.name
-                else UIViewModel.Player.X.name
-
-            }
+            if (::ownPlayerName.isInitialized.not())
+                ownPlayerName = if (from == DataPacket.ID_LOCAL) {
+                    this
+                } else {
+                    if (equals(UIViewModel.Player.X.name, true)) UIViewModel.Player.O.name
+                    else UIViewModel.Player.X.name
+                }
             val greenOrBlue = if (ownPlayerName.equals("x", true)) "blue" else "green"
             val playerText = "You are team $greenOrBlue"
 
@@ -404,12 +372,17 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                     val msgText = msg.text.toString()
                     ///Check if message is for invite, reset it, set user names
                     val inviteAcceptSplit = msgText.split("-")
-                    if (isInviteMessage(inviteAcceptSplit) && inviteAcceptSplit.size == 3) {
-                        gameReset("")
-                        setPlayerName(inviteAcceptSplit, msg.from)
-                        lockFirstMove(inviteAcceptSplit[2])
+                    if ((isInviteMessage(inviteAcceptSplit) && inviteAcceptSplit.size == 3)
+                        || msgText.startsWith("playAgain")
+                    ) {
+
+                        gameInviteAcceptMsg = inviteAcceptSplit[1]
+                        msgFrom = msg.from ?: ""
+                        startGame(msgFrom, inviteAcceptSplit)
+
                         return
                     }
+
 
                     // P1:2
                     val splitResult = msgText.split(":")
@@ -425,13 +398,6 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                         }
                     }
 
-                    // Play Again
-                    if (msgText.equals("playAgain")) {
-                        allowPlayAgainMsgSent = false
-                        _binding.playAgain.performClick()
-                        allowPlayAgainMsgSent = true
-
-                    }
                 } else {
 //                    Log.d("Sufyan", "Message not delivered")
                 }
@@ -439,6 +405,18 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                 Log.d("Sufyan", "Message size 0")
             }
         }
+
+    }
+
+    private var gameInviteAcceptMsg = "X"
+    private var msgFrom = ""
+
+    private fun startGame(msgFrom: String?, inviteAcceptSplit: List<String>) {
+        _binding.playAgain.visibility = View.GONE
+        gameReset("")
+        setPlayerName(inviteAcceptSplit, msgFrom)
+        lockFirstMove(inviteAcceptSplit[2])
+        Timber.e("StartingPlayerMove: ${inviteAcceptSplit[2]}")
 
     }
 
@@ -462,6 +440,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
 
     // reset the game
     fun gameReset(resultMessage: String) {
+        drawHorizontalWinState(-1)
 
         gameActive = true
         activePlayer = 0
@@ -484,24 +463,6 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
             1
     }
 
-    private val inviteAcceptedReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let { _intent ->
-                val acceptedChannel = _intent.getStringExtra(EXTRA_ACCEPTED_CHANNEL_KEY)
-                val sender = _intent.getStringExtra(EXTRA_SENDER_MSG_KEY)
-                val inviteAcceptedMsg = _intent.getStringExtra(EXTRA_INVITE_ACCEPTED_MSG_KEY)
-                if (!acceptedChannel.isNullOrBlank() && !sender.isNullOrBlank() && !inviteAcceptedMsg.isNullOrBlank()) {
-                    val msg = inviteAcceptedMsg.split("-")
-                    model.setAccepted(acceptedChannel, true)
-                    model.setContactKey(acceptedChannel)
-                    gameReset("")
-                    setPlayerName(msg, sender)
-                    lockFirstMove(firstAttemptByPlayer = msg[2])
-                }
-            }
-
-        }
-    }
     private val leftGameReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let { _intent ->
@@ -515,13 +476,4 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
         }
     }
 
-    private fun showLeftConfirmationDialog(onOkay: () -> Unit) {
-        AlertDialog.Builder(requireActivity())
-            .setTitle("Game leave alert")
-            .setMessage("Opponent left the game")
-            .setPositiveButton("Ok") { dialog, which ->
-                onOkay.invoke()
-            }
-            .show()
-    }
 }

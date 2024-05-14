@@ -87,7 +87,7 @@ class MessagesFragment : ScreenFragment("Messages") {
                 acceptInvite = { packet ->
                     //Invite message sent as: "invite_accepted-X-X" where first X is username and second one is random first player
                     model.sendMessage(
-                        InviteState.INVITE_ACCEPTED.title + "-${getRandomUserName()}-${getRandomUserName()}",
+                        InviteState.INVITE_ACCEPTED.title +"-${getRandomUserName()}-${getRandomUserName()}",
                         packet.contact_key
                     )
                     model.setAccepted(packet.contact_key, true)
@@ -95,7 +95,6 @@ class MessagesFragment : ScreenFragment("Messages") {
                     (activity as MainTabActivity).resetBadge()
                 },
                 rejectInvite = { packet ->
-                    //Invite message sent as: "invite_accepted-X-X" where first X is username and second one is random first player
                     model.sendMessage(
                         InviteState.INVITE_REJECTED.title,
                         packet.contact_key
