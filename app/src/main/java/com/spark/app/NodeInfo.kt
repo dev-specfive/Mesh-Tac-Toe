@@ -6,9 +6,9 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.spark.app.util.GPSFormat
+import com.spark.app.util.anonymize
 import com.spark.app.util.bearing
 import com.spark.app.util.latLongToMeter
-import com.spark.app.util.anonymize
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -27,7 +27,7 @@ data class MeshUser(
     val longName: String,
     val shortName: String,
     val hwModel: MeshProtos.HardwareModel,
-    val isLicensed: Boolean = false,
+    val isLicensed: Boolean = false
 ) : Parcelable {
 
     override fun toString(): String {

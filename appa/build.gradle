@@ -34,7 +34,7 @@ android {
     compileSdk 34
     defaultConfig {
         applicationId "com.spark.appa"
-        minSdkVersion 21 // The oldest emulator image I have tried is 22 (though 21 probably works)
+        minSdkVersion 24 // The oldest emulator image I have tried is 22 (though 21 probably works)
         targetSdk 33
         versionCode 30221 // format is Mmmss (where M is 1+the numeric major number
         versionName "2.2.21"

@@ -796,6 +796,7 @@ class MeshService : Service(), Logging {
         val splitResult = dataPacket.text
         if (dataPacket.text?.isNotBlank() == true && splitResult.equals(InviteState.INVITE_REJECTED.title, true)){
             val intent = Intent(InviteState.INVITE_REJECTED.title)
+            intent.putExtra("name",getSenderName(dataPacket))
             LocalBroadcastManager.getInstance(baseContext).sendBroadcast(intent)
         }
     }

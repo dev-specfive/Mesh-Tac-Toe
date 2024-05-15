@@ -21,6 +21,9 @@ import com.spark.appa.Constants.ExpirationTimeForInvite
 import com.spark.appa.adapters.NearbyDeviceAdapter
 import com.spark.appa.data.prefs.PreferencesHelperImpl
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Timer
 import java.util.TimerTask
 import javax.inject.Inject
@@ -61,7 +64,15 @@ class NearbyDevicesFragment : ScreenFragment("Nearby") {
 
     private val inviteReject = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            //TODO: On receive reject invite allow the sender to invite again to the user
+            val rejectedBy = intent?.getStringExtra("name")
+
+            val list = preferencesHelperImpl.getList() as ArrayList
+            list.removeIf{it.nodeName==rejectedBy}
+            GlobalScope.launch {
+                preferencesHelperImpl.saveList(list)
+            }
+            devicesAdapter.notifyDataSetChanged()
+            Timber.e("Rejected by: ${intent?.getStringExtra("name")}")
         }
     }
 
