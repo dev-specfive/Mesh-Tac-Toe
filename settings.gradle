@@ -1,3 +1,3 @@
-include ':app'
+include ':meshtastic'
 rootProject.name='Spec5'
-include ':appa'
+include ':app_main'
