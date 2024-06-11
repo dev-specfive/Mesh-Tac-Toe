@@ -31,7 +31,6 @@ class NearbyDeviceAdapter(
     }
 
     override fun getItemCount(): Int = devices.size
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val node = devices[position]
         val ourNodeInfo = devices[0]
@@ -41,6 +40,7 @@ class NearbyDeviceAdapter(
         renderSignal(holder, node, ourNodeInfo)
 
         val list = (pref.getList())
+
         val nodeLastInviteSent = list.firstOrNull { it.nodeName == node.user?.longName }
         var allowInvite = true
         nodeLastInviteSent?.inviteSentTime?.let {
@@ -51,11 +51,17 @@ class NearbyDeviceAdapter(
 
         holder.sendInvite.apply {
             visibility = if (node.num == ourNodeInfo.num) View.GONE else View.VISIBLE
-            text = /*if (allowInvite)*/ "Send Invite" /*else "Invite Sent"*/
+            text = if (allowInvite) "Send Invite" else "Invite Sent"
+            alpha = if (allowInvite) 1f else 0.4f
         }
+        holder.clockIcon.visibility = if (allowInvite) View.GONE else View.VISIBLE
+
         renderBattery(node.batteryLevel, node.voltage, holder)
         holder.sendInvite.setOnClickListener {
-//            if (allowInvite) {
+            val isAnyInviteSent = pref.getList().any {
+                (System.currentTimeMillis() - it.inviteSentTime) < Constants.ExpirationTimeForInvite
+            }
+            if (isAnyInviteSent.not()) {
                 val nodeInviteArrayList = (pref.getList()) as ArrayList
                 nodeInviteArrayList.removeIf { it.nodeName == node.user?.longName }
                 nodeInviteArrayList.add(
@@ -78,10 +84,9 @@ class NearbyDeviceAdapter(
                     }
                 } else
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Invite already sent", Toast.LENGTH_SHORT).show()
-//
-//            }
+            } else {
+                Toast.makeText(context, "Invite already sent", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -140,6 +145,7 @@ class NearbyDeviceAdapter(
         val deviceName = itemView.tvNodeName
         val signalView = itemView.tvSignalView
         val sendInvite = itemView.tvSendInvite
+        val clockIcon = itemView.clockIcon
         val batteryPctView = itemView.batteryPercentageView
         val batteryIcon = itemView.batteryIcon
 

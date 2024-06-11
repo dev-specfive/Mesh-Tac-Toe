@@ -59,7 +59,7 @@ class NearbyDevicesFragment : ScreenFragment("Nearby") {
                     }
                 }
             }
-        }, 2 * 1000, ExpirationTimeForInvite)
+        }, 1 , ExpirationTimeForInvite)
     }
 
     private val inviteReject = object : BroadcastReceiver() {
