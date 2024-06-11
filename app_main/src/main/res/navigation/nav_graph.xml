@@ -30,4 +30,8 @@
         android:name="com.spark.app_main.fragments.GamePlayFragment"
         android:label="gamepad"
         tools:layout="@layout/fragment_new_tik_tac_toe_game" />
+    <fragment
+        android:id="@+id/shop_fragment"
+        android:name="com.spark.app_main.fragments.ShopFragment"
+        android:label="ShopFragment" />
 </navigation>

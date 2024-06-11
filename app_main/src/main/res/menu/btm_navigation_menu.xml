@@ -25,4 +25,9 @@
         android:title="@string/channel"
         android:icon="@drawable/ic_twotone_contactless_24"/>
 
+ <item
+        android:id="@+id/shop_fragment"
+        android:title="@string/shop"
+        android:icon="@drawable/baseline_shopping_cart_24"/>
+
 </menu>
