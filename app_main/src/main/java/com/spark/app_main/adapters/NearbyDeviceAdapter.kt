@@ -51,11 +51,11 @@ class NearbyDeviceAdapter(
 
         holder.sendInvite.apply {
             visibility = if (node.num == ourNodeInfo.num) View.GONE else View.VISIBLE
-            text = if (allowInvite) "Send Invite" else "Invite Sent"
+            text = /*if (allowInvite)*/ "Send Invite" /*else "Invite Sent"*/
         }
         renderBattery(node.batteryLevel, node.voltage, holder)
         holder.sendInvite.setOnClickListener {
-            if (allowInvite) {
+//            if (allowInvite) {
                 val nodeInviteArrayList = (pref.getList()) as ArrayList
                 nodeInviteArrayList.removeIf { it.nodeName == node.user?.longName }
                 nodeInviteArrayList.add(
@@ -78,10 +78,10 @@ class NearbyDeviceAdapter(
                     }
                 } else
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Invite already sent", Toast.LENGTH_SHORT).show()
-
-            }
+//            } else {
+//                Toast.makeText(context, "Invite already sent", Toast.LENGTH_SHORT).show()
+//
+//            }
         }
     }
 
