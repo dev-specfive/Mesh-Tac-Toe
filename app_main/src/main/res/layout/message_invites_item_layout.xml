@@ -24,8 +24,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="5dp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -49,17 +49,20 @@
                 android:textStyle="bold"
                 android:visibility="visible" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:textColor="@color/profile_name_text_color"
-                tools:text="4:53 pm"/>
+                tools:text="4:53 pm" />
+
             <Button
                 android:id="@+id/accept_invite"
                 android:layout_width="wrap_content"
@@ -71,12 +74,12 @@
                 tools:visibility="visible" />
 
             <Button
-                android:background="@android:color/transparent"
                 android:id="@+id/reject_invite"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                android:backgroundTint="@android:color/holo_red_light"
                 android:text="@string/reject_invite"
-                android:textColor="@color/white"
+                android:textColor="@android:color/black"
                 android:textSize="12sp"
                 android:visibility="invisible"
                 tools:visibility="visible" />

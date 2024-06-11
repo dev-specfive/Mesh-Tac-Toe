@@ -282,7 +282,7 @@ class MeshService : Service(), Logging {
             }
 
             if (contains(InviteState.INVITE_REJECTED.title, true)) {
-                return  "${getSenderName(dataPacket)} reject the invite"
+                return  "${getSenderName(dataPacket)} rejected the invite"
             }
         }
         return "${getSenderName(dataPacket)} made a move"
