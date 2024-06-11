@@ -23,7 +23,7 @@ class NearbyDeviceAdapter(
 ) : RecyclerView.Adapter<NearbyDeviceAdapter.ViewHolder>() {
     private var listener: OnInviteClickListener? = null
 
-
+    //    private var isClickable = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
         val deviceView = NearbyNodeItemLayoutBinding.inflate(inflater, parent, false)
@@ -58,10 +58,13 @@ class NearbyDeviceAdapter(
 
         renderBattery(node.batteryLevel, node.voltage, holder)
         holder.sendInvite.setOnClickListener {
+            notifyDataSetChanged()
+
             val isAnyInviteSent = pref.getList().any {
                 (System.currentTimeMillis() - it.inviteSentTime) < Constants.ExpirationTimeForInvite
             }
             if (isAnyInviteSent.not()) {
+                
                 val nodeInviteArrayList = (pref.getList()) as ArrayList
                 nodeInviteArrayList.removeIf { it.nodeName == node.user?.longName }
                 nodeInviteArrayList.add(

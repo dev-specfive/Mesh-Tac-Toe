@@ -36,13 +36,21 @@ import com.spark.app.util.GridSpacingItemDecoration
 import com.spark.app_main.adapters.GamePlayAdapter
 import com.spark.app_main.adapters.TickTacToeEnum
 import com.spark.app_main.adapters.TickTackToeOptionState
+import com.spark.app_main.data.prefs.PreferencesHelperImpl
 import com.spark.app_main.databinding.FragmentNewTikTacToeGameBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Arrays
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     private lateinit var _binding: FragmentNewTikTacToeGameBinding
+
+    @Inject
+    lateinit var pref: PreferencesHelperImpl
 
     private val gamePlayAdapter = GamePlayAdapter { index, state ->
         playIfOppenentMadeMove(index)
@@ -97,6 +105,10 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
         super.onViewCreated(view, savedInstanceState)
         setUpActionbarTitle()
 
+        // Clear the list if user enter into the game
+        GlobalScope.launch {
+            pref.saveList(emptyList())
+        }
         val spacing = 40
         val includeEdge = true
         val borderColor = Color.parseColor("#DBDBDB")
@@ -377,12 +389,12 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                     if ((isInviteMessage(inviteAcceptSplit) && inviteAcceptSplit.size == 3)
                         || msgText.startsWith("playAgain")
                     ) {
-                        val delayForAnimation = if (msgText.startsWith("playAgain")){
-                            _binding.coinFlipAnimation.visibility= View.VISIBLE
+                        val delayForAnimation = if (msgText.startsWith("playAgain")) {
+                            _binding.coinFlipAnimation.visibility = View.VISIBLE
                             5000L
                         } else 0L
                         Handler(Looper.getMainLooper()).postDelayed({
-                            _binding.coinFlipAnimation.visibility= View.GONE
+                            _binding.coinFlipAnimation.visibility = View.GONE
                             gameInviteAcceptMsg = inviteAcceptSplit[1]
                             msgFrom = msg.from ?: ""
                             startGame(msgFrom, inviteAcceptSplit)

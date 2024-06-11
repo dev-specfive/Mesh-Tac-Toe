@@ -67,7 +67,7 @@ class NearbyDevicesFragment : ScreenFragment("Nearby") {
             val rejectedBy = intent?.getStringExtra("name")
 
             val list = preferencesHelperImpl.getList() as ArrayList
-            list.removeIf{it.nodeName==rejectedBy}
+            list.removeIf { it.nodeName == rejectedBy }
             GlobalScope.launch {
                 preferencesHelperImpl.saveList(list)
             }
