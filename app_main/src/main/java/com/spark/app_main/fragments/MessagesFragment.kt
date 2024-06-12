@@ -68,7 +68,7 @@ class MessagesFragment : ScreenFragment("Messages") {
                 activity?.runOnUiThread {
                     if (::messagesAdapter.isInitialized) {
                         messagesAdapter.notifyDataSetChanged()
-                        (activity as MainTabActivity).resetBadge()
+                        (activity as MainTabActivity?)?.resetBadge()
                     }
                 }
             }
