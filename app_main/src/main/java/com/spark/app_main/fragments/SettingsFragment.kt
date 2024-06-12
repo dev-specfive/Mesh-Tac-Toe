@@ -6,6 +6,8 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
@@ -35,10 +37,11 @@ import com.spark.app.model.getInitials
 import com.spark.app.service.MeshService
 import com.spark.app.ui.ScreenFragment
 import com.spark.app.ui.SettingsFragment
-import com.spark.app_main.adapters.AvailableDeviceAdapter
+import com.spark.app.util.exceptionToSnackbar
 import com.spark.app.util.getAssociationResult
+import com.spark.app_main.adapters.AvailableDeviceAdapter
 
-class SettingsFragment: ScreenFragment("Nearby")  {
+class SettingsFragment : ScreenFragment("Nearby") {
     private lateinit var devicesAdapter: AvailableDeviceAdapter
     private lateinit var binding: ConnectivitySettingsFragmentBinding
     private val scanModel: BTScanModel by activityViewModels()
@@ -46,7 +49,7 @@ class SettingsFragment: ScreenFragment("Nearby")  {
     private val model: UIViewModel by activityViewModels()
     private lateinit var devicesList: java.util.ArrayList<BTScanModel.DeviceListEntry>
     private lateinit var myProfileName: String
-    private var selectedDevice: BTScanModel.DeviceListEntry?  = null
+    private var selectedDevice: BTScanModel.DeviceListEntry? = null
 
     private val regions = ConfigProtos.Config.LoRaConfig.RegionCode.entries.filter {
         it != ConfigProtos.Config.LoRaConfig.RegionCode.UNRECOGNIZED
@@ -63,6 +66,28 @@ class SettingsFragment: ScreenFragment("Nearby")  {
         binding = ConnectivitySettingsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    private val regionSpinnerListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(
+            parent: AdapterView<*>,
+            view: View,
+            position: Int,
+            id: Long
+        ) {
+            val item = parent.getItemAtPosition(position) as String?
+            val asProto = item!!.let { ConfigProtos.Config.LoRaConfig.RegionCode.valueOf(it) }
+            exceptionToSnackbar(requireView()) {
+                debug("regionSpinner onItemSelected $asProto")
+                if (asProto != model.region) model.region = asProto
+            }
+            updateNodeInfo() // We might have just changed Unset to set
+        }
+
+        override fun onNothingSelected(parent: AdapterView<*>) {
+            //TODO("Not yet implemented")
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -125,16 +150,18 @@ class SettingsFragment: ScreenFragment("Nearby")  {
 
     private fun updateDeviceName() {
         val deviceUpdatedname = binding.etProfileName.text.trim().toString()
-        if (!deviceUpdatedname.equals(myProfileName,true) && deviceUpdatedname.isNotBlank())
-        {
+        if (!deviceUpdatedname.equals(myProfileName, true) && deviceUpdatedname.isNotBlank()) {
             model.ourNodeInfo.value?.user?.let {
-                val user = it.copy(longName = deviceUpdatedname, shortName = getInitials(deviceUpdatedname))
+                val user = it.copy(
+                    longName = deviceUpdatedname,
+                    shortName = getInitials(deviceUpdatedname)
+                )
                 if (deviceUpdatedname.isNotEmpty()) model.setOwner(user)
             }
             requireActivity().hideKeyboard()
         }
         binding.groupMyProfile.visibility = View.VISIBLE
-        binding.groupEditProfile.visibility  = View.GONE
+        binding.groupEditProfile.visibility = View.GONE
     }
 
     private fun initDevicesAdapter(
@@ -142,12 +169,20 @@ class SettingsFragment: ScreenFragment("Nearby")  {
         devices: ArrayList<BTScanModel.DeviceListEntry>
     ) {
         context?.let {
-            devicesAdapter = AvailableDeviceAdapter(it, devices, scanModel.selectedNotNull, isMeshConnected, getPreSelectedIndex(devices))
-            devicesAdapter.setOnItemClickListener(object : AvailableDeviceAdapter.OnItemClickListener{
+            devicesAdapter = AvailableDeviceAdapter(
+                it,
+                devices,
+                scanModel.selectedNotNull,
+                isMeshConnected,
+                getPreSelectedIndex(devices)
+            )
+            devicesAdapter.setOnItemClickListener(object :
+                AvailableDeviceAdapter.OnItemClickListener {
                 override fun onItemClick(selectedDeviceNearby: BTScanModel.DeviceListEntry) {
                     binding.connectSwitch.setOnCheckedChangeListener(null)
                     selectedDevice = selectedDeviceNearby
-                    binding.connectSwitch.isChecked = selectedDevice?.fullAddress == scanModel.selectedNotNull
+                    binding.connectSwitch.isChecked =
+                        selectedDevice?.fullAddress == scanModel.selectedNotNull
                     binding.connectSwitch.setOnCheckedChangeListener(listenerSwitchChange)
                 }
 
@@ -193,11 +228,15 @@ class SettingsFragment: ScreenFragment("Nearby")  {
             }
 
         // init our region spinner
-  /*      val spinner = binding.regionSpinner
+        val spinner = binding.regionSpinner
         val regionAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, regions)
         regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = regionAdapter*/
+        spinner.adapter = regionAdapter
+
+        binding.ivDropDown.setOnClickListener {
+            spinner.performClick()
+        }
 
         model.ourNodeInfo.asLiveData().observe(viewLifecycleOwner) { node ->
             binding.tvMyProfileName.text = node?.user?.longName.orEmpty()
@@ -208,7 +247,7 @@ class SettingsFragment: ScreenFragment("Nearby")  {
         scanModel.devices.observe(viewLifecycleOwner) { devices ->
 //            updateDevicesButtons(devices)
             updateDevices(devices)
-            debug("devices"+devices.toString())
+            debug("devices" + devices.toString())
         }
 
         // Only let user edit their name or set software update while connected to a radio
@@ -251,9 +290,15 @@ class SettingsFragment: ScreenFragment("Nearby")  {
         scanModel.errorText.observe(viewLifecycleOwner) { errMsg ->
             if (errMsg != null) {
                 errMsg.apply {
-                    binding.tvDeviceStatus.visibility =  if (contains("not connected", true)) View.GONE else View.VISIBLE
+                    binding.tvDeviceStatus.visibility =
+                        if (contains("not connected", true)) View.GONE else View.VISIBLE
                     binding.tvDeviceStatus.text = this
-                    binding.scanProgressBar.visibility =  if (contains("connected to", true) || contains("not connected", true)) View.GONE else View.VISIBLE
+                    binding.scanProgressBar.visibility =
+                        if (contains("connected to", true) || contains(
+                                "not connected",
+                                true
+                            )
+                        ) View.GONE else View.VISIBLE
                 }
 
 //                Toast.makeText(context, errMsg, Toast.LENGTH_SHORT).show()
@@ -273,15 +318,15 @@ class SettingsFragment: ScreenFragment("Nearby")  {
             }
         }
 
-       /* binding.usernameEditText.onEditorAction(EditorInfo.IME_ACTION_DONE) {
-            debug("received IME_ACTION_DONE")
-            val n = binding.usernameEditText.text.toString().trim()
-            model.ourNodeInfo.value?.user?.let {
-                val user = it.copy(longName = n, shortName = getInitials(n))
-                if (n.isNotEmpty()) model.setOwner(user)
-            }
-            requireActivity().hideKeyboard()
-        }*/
+        /* binding.usernameEditText.onEditorAction(EditorInfo.IME_ACTION_DONE) {
+             debug("received IME_ACTION_DONE")
+             val n = binding.usernameEditText.text.toString().trim()
+             model.ourNodeInfo.value?.user?.let {
+                 val user = it.copy(longName = n, shortName = getInitials(n))
+                 if (n.isNotEmpty()) model.setOwner(user)
+             }
+             requireActivity().hideKeyboard()
+         }*/
 
         val app = (requireContext().applicationContext as GeeksvilleApplication)
         val isGooglePlayAvailable = requireContext().isGooglePlayAvailable()
@@ -331,29 +376,26 @@ class SettingsFragment: ScreenFragment("Nearby")  {
     }
 
 
-
     override fun onResume() {
         super.onResume()
         if (scanModel.selectedBluetooth) checkBTEnabled()
     }
 
-    private fun checkBTEnabled(): Boolean = (bluetoothViewModel.enabled.value == true).also { enabled ->
-        if (!enabled) {
-            warn("Telling user bluetooth is disabled")
-            model.showSnackbar(R.string.bluetooth_disabled)
+    private fun checkBTEnabled(): Boolean =
+        (bluetoothViewModel.enabled.value == true).also { enabled ->
+            if (!enabled) {
+                warn("Telling user bluetooth is disabled")
+                model.showSnackbar(R.string.bluetooth_disabled)
+            }
         }
-    }
 
     val listenerSwitchChange = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-        if (!isChecked)
-        {
+        if (!isChecked) {
             binding.rvDevices.alpha = 0.5F
             val defaultNoneDevice = devicesList.firstOrNull { it.fullAddress == "n" }
             connectSelectedDevice(defaultNoneDevice)
             selectedDevice = null
-        }
-        else
-        {
+        } else {
             binding.rvDevices.alpha = 1.0F
             connectSelectedDevice(selectedDevice)
             if (selectedDevice != null)
@@ -366,7 +408,7 @@ class SettingsFragment: ScreenFragment("Nearby")  {
             if (!device.bonded) // If user just clicked on us, try to bond
                 binding.tvDeviceStatus.setText(R.string.starting_pairing)
             scanModel.onSelected(_device)
-        }?: run {
+        } ?: run {
 //            binding.connectSwitch.isChecked = false
         }
 
@@ -384,25 +426,42 @@ class SettingsFragment: ScreenFragment("Nearby")  {
 //        binding.usernameEditText.isEnabled = isConnected && !model.isManaged
 
         // update the region selection from the device
-        val region919Number = ConfigProtos.Config.LoRaConfig.RegionCode.MY_919.number
-        val asProto = region919Number.let { ConfigProtos.Config.LoRaConfig.RegionCode.valueOf(it) }
-        if (isConnected){
-            if (asProto != model.region) model.region = asProto
-        }
+//        val region919Number = ConfigProtos.Config.LoRaConfig.RegionCode.MY_919.number
+//        val asProto = region919Number.let { ConfigProtos.Config.LoRaConfig.RegionCode.valueOf(it) }
+//        if (isConnected) {
+//            if (asProto != model.region) model.region = asProto
+//        }
+
+//        val region = model.region
+//
+//        debug("current region is $region")
+
+        // update the region selection from the device
         val region = model.region
+        val spinner = binding.regionSpinner
+        val unsetIndex = regions.indexOf(ConfigProtos.Config.LoRaConfig.RegionCode.UNSET.name)
+        spinner.onItemSelectedListener = null
 
         debug("current region is $region")
-        if (isConnected)
-        {
+        var regionIndex = regions.indexOf(region.name)
+        if (regionIndex == -1) // Not found, probably because the device has a region our app doesn't yet understand.  Punt and say Unset
+            regionIndex = unsetIndex
+
+        // We don't want to be notified of our own changes, so turn off listener while making them
+        spinner.setSelection(regionIndex, false)
+        spinner.onItemSelectedListener = regionSpinnerListener
+        spinner.isEnabled = !model.isManaged
+
+        if (isConnected) {
             binding.tvRegion.text = String.format(getString(R.string.region_lbl), region.name)
             binding.etRegionName.setText(region.name)
         }
-
         // Update the status string (highest priority messages first)
         val info = model.myNodeInfo.value
         when (connectionState) {
             MeshService.ConnectionState.CONNECTED ->
                 if (region.number == 0) R.string.must_set_region else R.string.connected_to
+
             MeshService.ConnectionState.DISCONNECTED -> R.string.not_connected
             MeshService.ConnectionState.DEVICE_SLEEP -> R.string.connected_sleeping
             else -> null
@@ -411,6 +470,7 @@ class SettingsFragment: ScreenFragment("Nearby")  {
             scanModel.setErrorText(getString(it, firmwareString))
         }
     }
+
     companion object {
         const val SCAN_PERIOD: Long = 10000 // Stops scanning after 10 seconds
     }

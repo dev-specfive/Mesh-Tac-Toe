@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_color_bg">
@@ -53,17 +54,6 @@
             app:layout_constraintStart_toEndOf="@id/iv_logo_icon"
             app:layout_constraintTop_toTopOf="@id/iv_logo_icon" />
 
-        <TextView
-            android:id="@+id/tv_region"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:text="@string/region_lbl"
-            android:textColor="@color/profile_name_text_color"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/iv_logo_icon"
-            app:layout_constraintTop_toBottomOf="@id/tv_my_profile_name" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_edit_profile"
@@ -133,16 +123,46 @@
             app:layout_constraintStart_toEndOf="@+id/tv_region_lbl"
             app:layout_constraintTop_toTopOf="@+id/tv_region_lbl" />
 
-        <!--        <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_drop_down"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/et_region_name"
-                    app:layout_constraintBottom_toBottomOf="@id/et_region_name"
-                    android:layout_marginEnd="5dp"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/arrow_drop_down" />-->
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/tv_my_profile_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_profile_name">
+
+            <TextView
+                android:id="@+id/tv_region"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/region_lbl"
+                android:textColor="@color/profile_name_text_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/regionSpinner"
+                android:layout_width="120dp"
+                android:layout_height="0dp"
+                android:theme="@style/AppTheme.Spinner"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_drop_down"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_toEndOf="@+id/tv_region"
+                android:theme="@style/AppTheme.Spinner"
+                android:visibility="visible"
+                app:srcCompat="@drawable/arrow_drop_down"
+                tools:visibility="visible" />
+
+
+        </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_save_changes"
@@ -173,12 +193,11 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/connect_round_background"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:paddingTop="16dp"
+        android:paddingEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_profile_view"
-       >
+        app:layout_constraintTop_toBottomOf="@+id/my_profile_view">
 
         <TextView
             android:id="@+id/tv_connect_lbl"
@@ -199,9 +218,9 @@
             android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_connect_lbl"
             app:layout_constraintEnd_toEndOf="parent"
-            app:trackTint="@color/switch_track_selector"
+            app:layout_constraintTop_toTopOf="@id/tv_connect_lbl"
             app:thumbTint="@color/switch_thumb_selector"
-            app:layout_constraintTop_toTopOf="@id/tv_connect_lbl" />
+            app:trackTint="@color/switch_track_selector" />
 
         <TextView
             android:id="@+id/tv_detected"
@@ -213,6 +232,7 @@
             android:textColor="@color/colourGreyNavbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_connect_lbl" />
+
         <TextView
             android:id="@+id/tv_device_status"
             android:layout_width="wrap_content"
@@ -238,14 +258,15 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
+            android:background="@drawable/pair_button_round_background"
             android:text="@string/pair_new_radio"
             android:textAllCaps="false"
-            android:background="@drawable/pair_button_round_background"
             android:textColor="@color/pair_device_button_color"
             app:layout_constraintEnd_toEndOf="@+id/connect_switch"
             app:layout_constraintStart_toStartOf="@+id/rv_devices"
             app:layout_constraintTop_toBottomOf="@+id/rv_devices" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ProgressBar
         android:id="@+id/scanProgressBar"
         style="?android:attr/progressBarStyle"
@@ -253,8 +274,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,8 +3,8 @@ package com.spark.app.util
 import android.os.RemoteException
 import android.util.Log
 import android.view.View
-import com.spark.app.android.Logging
 import com.google.android.material.snackbar.Snackbar
+import com.spark.app.android.Logging
 
 
 object Exceptions : Logging {
