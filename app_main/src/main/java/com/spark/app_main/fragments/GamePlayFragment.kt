@@ -64,6 +64,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
         var activePlayer = 0
         var gameActive = true
         var lastMessageFromLocal: Boolean = false
+        var lastReceivedMSG: String? = null // To prevent receiving message again
 
         // State meanings:
         //    0 - X
@@ -408,12 +409,16 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
 
                     if (splitResult.size == 2) {
                         lastMessageFromLocal = packet.data.from == DataPacket.ID_LOCAL
-                        if (!lastMessageFromLocal) {
+                        if (!lastMessageFromLocal &&
+                            lastReceivedMSG.equals(packet.data.text, true).not()
+                        ) {
                             val firstPart = splitResult[0]
                             val secondPart = splitResult[1]
 
                             setActivePlayer(firstPart)
                             playerTap(secondPart.toInt())
+
+                            lastReceivedMSG = packet.data.text
                         }
                     }
 
