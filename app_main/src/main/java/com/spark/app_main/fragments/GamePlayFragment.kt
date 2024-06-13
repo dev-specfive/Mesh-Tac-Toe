@@ -410,7 +410,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                     if (splitResult.size == 2) {
                         lastMessageFromLocal = packet.data.from == DataPacket.ID_LOCAL
                         if (!lastMessageFromLocal &&
-                            lastReceivedMSG.equals(packet.data.text, true).not()
+                            lastReceivedMSG.equals(msgText, true).not()
                         ) {
                             val firstPart = splitResult[0]
                             val secondPart = splitResult[1]
@@ -418,7 +418,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
                             setActivePlayer(firstPart)
                             playerTap(secondPart.toInt())
 
-                            lastReceivedMSG = packet.data.text
+                            lastReceivedMSG = msgText
                         }
                     }
 
