@@ -192,7 +192,7 @@
     <string name="error_duty_cycle">Duty Cycle limit reached. Cannot send messages right now, please try again later.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="tic_tac_toe"> # Tic Tac Toe</string>
+    <string name="tic_tac_toe"> # Mesh-Tac-Toe</string>
     <string name="challenge">Challenge</string>
     <string name="send_invite">Send Invite</string>
     <string name="accept_invite">Accept</string>
