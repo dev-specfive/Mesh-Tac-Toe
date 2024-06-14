@@ -1968,6 +1968,25 @@ class MeshService : Service(), Logging {
             })
         }
     }
+//    override fun onTaskRemoved(rootIntent: Intent?) {
+//            super.onTaskRemoved(rootIntent)
+//        // Show a toast message when the app is removed from recent apps
+//
+//
+//        val contactKey = DataPacket.ID_BROADCAST
+//        val channel = contactKey[0].digitToIntOrNull()
+//        val dest = if (channel != null) contactKey.substring(1) else contactKey
+//        val p = DataPacket(dest, channel ?: 0, InviteState.LEFT_GAME.title)
+//        sendNow(p)
+//
+//        Toast.makeText(
+//            applicationContext,
+//            "App is being removed from recent apps",
+//            Toast.LENGTH_LONG
+//        ).show()
+//        }
+        // Perform any other necessary cleanup
+//    }
 }
 
 fun updateNodeInfoTime(it: NodeInfo, rxTime: Int) {

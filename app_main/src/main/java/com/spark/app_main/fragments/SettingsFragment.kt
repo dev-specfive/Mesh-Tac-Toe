@@ -116,6 +116,7 @@ class SettingsFragment : ScreenFragment("Nearby") {
 //        binding.connectSwitch.setOnCheckedChangeListener(listenerSwitchChange)
 
         binding.ivEditProfile.setOnClickListener {
+            binding.regionLayout.visibility = View.GONE
             binding.groupMyProfile.visibility = View.GONE
             binding.groupEditProfile.visibility = View.VISIBLE
             myProfileName = binding.etProfileName.text.trim().toString()
@@ -161,6 +162,7 @@ class SettingsFragment : ScreenFragment("Nearby") {
             requireActivity().hideKeyboard()
         }
         binding.groupMyProfile.visibility = View.VISIBLE
+        binding.regionLayout.visibility = View.VISIBLE
         binding.groupEditProfile.visibility = View.GONE
     }
 

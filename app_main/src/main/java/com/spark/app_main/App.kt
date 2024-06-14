@@ -21,4 +21,8 @@ class App : MeshUtilApplication() {
         } else Log.e("TIMBER", "Timber Stop")
 
     }
+//    override fun onTerminate() {
+//        Toast.makeText(this, "App is terminated", Toast.LENGTH_SHORT).show()
+//        super.onTerminate()
+//    }
 }
