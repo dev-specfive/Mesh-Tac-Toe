@@ -24,6 +24,7 @@ import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.spark.app.DataPacket
 import com.spark.app.MessageStatus
 import com.spark.app.NodeInfo
@@ -33,11 +34,14 @@ import com.spark.app.model.UIViewModel
 import com.spark.app.service.InviteState
 import com.spark.app.ui.ScreenFragment
 import com.spark.app.util.GridSpacingItemDecoration
+import com.spark.app_main.Constants.GAME_PLAY_EXPIRATION_TIME
 import com.spark.app_main.adapters.GamePlayAdapter
 import com.spark.app_main.adapters.TickTacToeEnum
 import com.spark.app_main.adapters.TickTackToeOptionState
 import com.spark.app_main.data.prefs.PreferencesHelperImpl
 import com.spark.app_main.databinding.FragmentNewTikTacToeGameBinding
+import com.spark.app_main.dialog.InstructionDialog
+import com.spark.app_main.model.MaterialDialogContent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -45,9 +49,11 @@ import timber.log.Timber
 import java.util.Arrays
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     private lateinit var _binding: FragmentNewTikTacToeGameBinding
+    private var dialogWithLogoContent: InstructionDialog? = null
 
     @Inject
     lateinit var pref: PreferencesHelperImpl
@@ -57,6 +63,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     }
 
     companion object {
+        var lastKnownMoveTime: Long = System.currentTimeMillis()
 
         // Player representation
         // 0 - X
@@ -91,6 +98,15 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     private var contactKey = ""
     private lateinit var ownPlayerName: String
 
+    // Timer for both users
+    private var dialog: MaterialAlertDialogBuilder? = null
+
+    @Volatile
+    private var isRunning = true
+    private var lastKnownMoveTime: Long = System.currentTimeMillis()
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var checkThread: Thread
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,7 +121,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpActionbarTitle()
-
+        startThread()
         // Clear the list if user enter into the game
         GlobalScope.launch {
             pref.saveList(emptyList())
@@ -374,8 +390,10 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     }
 
     fun sendRadioMessage(msgStr: String) {
-        if (lastMessageFromLocal)
+        if (lastMessageFromLocal) {
+            updateTime()
             model.sendMessage(msgStr, contactKey)
+        }
     }
 
     fun messageReceived(messages: List<Packet>) {
@@ -417,8 +435,9 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
 
                             setActivePlayer(firstPart)
                             playerTap(secondPart.toInt())
-
                             lastReceivedMSG = msgText
+                            updateTime()
+
                         }
                     }
 
@@ -501,4 +520,64 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
         }
     }
 
+    private fun startThread() {
+        isRunning = true
+        checkThread = Thread {
+            try {
+                while (isRunning) {
+                    if (System.currentTimeMillis() - lastKnownMoveTime >= GAME_PLAY_EXPIRATION_TIME) {
+                        handler.post {
+                            showPopup()
+                        }
+                        break
+                    }
+                    Thread.sleep(1000)
+                }
+            } catch (e: InterruptedException) {
+                // Handle the interruption
+                isRunning = false
+            }
+        }
+        checkThread.start()
+    }
+
+    private fun showPopup() {
+        if (activity != null) {
+            
+            val dialogContent = MaterialDialogContent(
+                content = "No activity has been detected in the game for a while.",
+                topTitle = "Game Alert",
+                positiveButtonText = R.string.leave,
+                negativeButtonText = R.string.wait,
+            )
+
+            val mDialog = dialogWithLogoContent ?: InstructionDialog(
+                dialogContent,
+                positiveClickClosure = {
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                },
+                negativeClickClosure = {
+                    lastKnownMoveTime = System.currentTimeMillis()
+                    startThread()
+                }
+            ).also { dialog -> dialogWithLogoContent = dialog }
+            if (mDialog.isVisible) return
+            mDialog.show(requireActivity().supportFragmentManager, "")
+
+
+        }
+    }
+
+    private fun updateTime() {
+        lastKnownMoveTime = System.currentTimeMillis()
+
+    }
+
+    override fun onDestroy() {
+        Toast.makeText(requireContext(), "Destroying Fragment", Toast.LENGTH_SHORT).show()
+//        dialog?.cancel()
+        isRunning = false
+        checkThread.interrupt()
+        super.onDestroy()
+    }
 }

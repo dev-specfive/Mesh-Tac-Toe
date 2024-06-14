@@ -16,7 +16,6 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -54,6 +53,8 @@ import com.spark.app.service.ServiceRepository
 import com.spark.app.service.startService
 import com.spark.app.util.Exceptions
 import com.spark.app_main.databinding.ActivityMainTabBinding
+import com.spark.app_main.dialog.InstructionDialog
+import com.spark.app_main.model.MaterialDialogContent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,6 +75,7 @@ class MainTabActivity : AppCompatActivity(), Logging {
     private var acceptedChannel: String? = null
     private var requestedChannelUrl: Uri? = null
     private var currentFragmentID: Int = -1
+    private var dialogWithLogoContent: InstructionDialog? = null
 
     @Inject
     internal lateinit var serviceRepository: ServiceRepository
@@ -167,17 +169,23 @@ class MainTabActivity : AppCompatActivity(), Logging {
     }
 
     private fun showExitConfirmationDialog(onBack: () -> Unit) {
-        AlertDialog.Builder(this)
-            .setTitle("Exit Confirmation")
-            .setMessage("Are you sure you want to exit?")
-            .setPositiveButton("Yes") { dialog, which ->
-                // Handle exit action here
+        val dialogContent = MaterialDialogContent(
+            content = "Are you sure you want to exit?",
+            topTitle = "Exit Confirmation",
+            positiveButtonText = R.string.exit,
+            negativeButtonText = R.string.cancel,
+        )
+
+        val mDialog = dialogWithLogoContent ?: InstructionDialog(
+            dialogContent,
+            positiveClickClosure = {
                 onBack.invoke()
+            },
+            negativeClickClosure = {
             }
-            .setNegativeButton("No") { dialog, which ->
-                // Do nothing, dismiss the dialog
-            }
-            .show()
+        ).also { dialog -> dialogWithLogoContent = dialog }
+        if (mDialog.isVisible) return
+        mDialog.show(this.supportFragmentManager, "")
     }
 
     private fun setUpToolbar() {
