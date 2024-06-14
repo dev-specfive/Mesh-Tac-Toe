@@ -212,4 +212,8 @@
     <string name="channel">Channel</string>
     <string name="back">Back</string>
     <string name="common_channel_name">MeshTacToe</string>
+    <string name="stay">Stay</string>
+    <string name="exit">Exit</string>
+    <string name="wait">Wait</string>
+    <string name="leave">Leave</string>
 </resources>

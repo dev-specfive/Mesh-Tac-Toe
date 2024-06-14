@@ -16,6 +16,37 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="CustomAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">#000000</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#FFFFFF</item>
+    </style>
+    <!-- Alert Dialog -->
+    <style name="CustomAlertDialogTheme1" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- Background Color-->
+        <item name="android:background">#000000</item>
+        <!-- Text Color for title and message -->
+        <item name="colorOnSurface">#FFFFFF</item>
+        <!-- Style for positive button -->
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <!-- Style for negative button -->
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="@style/Widget.MaterialComponents.Button">
+        <!-- text color for the button -->
+        <item name="android:textColor">#FFFFFF</item>
+        <!-- Background tint for the button -->
+<!--        <item name="backgroundTint">@color/primaryDarkColor</item>-->
+    </style>
+
+    <style name="NegativeButtonStyle" parent="@style/Widget.MaterialComponents.Button">
+        <!-- text color for the button -->
+        <item name="android:textColor">#FFFFFF</item>
+        <!-- Background tint for the button -->
+<!--        <item name="backgroundTint">@color/primaryDarkColor</item>-->
+    </style>
+
     <style name="AppTheme.Spinner">
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
         <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
