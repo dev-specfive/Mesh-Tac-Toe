@@ -574,7 +574,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     }
 
     override fun onDestroy() {
-        Toast.makeText(requireContext(), "Destroying Fragment", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(), "Destroying Fragment", Toast.LENGTH_SHORT).show()
 //        dialog?.cancel()
         isRunning = false
         checkThread.interrupt()
