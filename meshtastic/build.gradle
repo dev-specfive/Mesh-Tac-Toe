@@ -14,26 +14,13 @@ unMock {
     keep "android.util.Base64"
 }
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
 
 android {
     namespace 'com.spark.app'
 
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-        }
-    }
+
     compileSdk 34
     defaultConfig {
-//        applicationId "com.spark.app"
         minSdkVersion 21 // The oldest emulator image I have tried is 22 (though 21 probably works)
         targetSdk 33
 
@@ -45,15 +32,9 @@ android {
     flavorDimensions = ['default']
     productFlavors {
         fdroid {
-//            applicationId "com.spark.app"
-
-            versionCode 30221 // format is Mmmss (where M is 1+the numeric major number
-            versionName "2.2.21"
 
             dimension = 'default'
-//            dependenciesInfo {
-//                includeInApk = false
-//            }
+
         }
         google {
             dimension = 'default'
@@ -63,33 +44,7 @@ android {
             }
         }
     }
-//    buildTypes {
-//        release {
-//            if (keystoreProperties['storeFile']) {
-//                signingConfig signingConfigs.release
-//            }
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//        }
-//        debug {
-//            pseudoLocalesEnabled true
-//        }
-//    }
-//    defaultConfig {
-//        // We have to list all translated languages here, because some of our libs have bogus languages that google play
-//        // doesn't like and we need to strip them (gr)
-//        resConfigs "bg", "cs", "de", "el", "en", "es", "fi", "fr", "fr-rHT", "ga", "hu", "is", "it", "iw", "ja", "ko", "nl", "nb", "pl", "pt", "pt-rBR", "ro", "ru", "sk", "sl", "sq", "sv", "tr", "zh", "uk"
-//
-//        ndk {
-//            // abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-//        }
-//    }
-//    bundle {
-//        language {
-//            enableSplit false
-//        }
-//    }
+
     buildFeatures {
         viewBinding true
         compose true
