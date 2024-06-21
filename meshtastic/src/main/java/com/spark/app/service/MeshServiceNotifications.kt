@@ -130,8 +130,9 @@ class MeshServiceNotifications(
 
             builder.setSmallIcon(
                 // vector form icons don't work reliably on older androids
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) R.drawable.app_icon_novect
-                else R.drawable.app_icon
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) R.drawable.app_icon_novect
+//                else
+                    R.drawable.app_icon
             )
                 .setLargeIcon(largeIcon)
         }
