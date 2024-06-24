@@ -63,8 +63,6 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     }
 
     companion object {
-        var lastKnownMoveTime: Long = System.currentTimeMillis()
-
         // Player representation
         // 0 - X
         // 1 - O
@@ -576,6 +574,7 @@ class GamePlayFragment : ScreenFragment("GamePlayFragment") {
     override fun onDestroy() {
 //        Toast.makeText(requireContext(), "Destroying Fragment", Toast.LENGTH_SHORT).show()
 //        dialog?.cancel()
+        dialogWithLogoContent?.dismiss()
         isRunning = false
         checkThread.interrupt()
         super.onDestroy()
