@@ -19,25 +19,34 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.spark.app.ConfigProtos
+import com.spark.app.ModuleConfigProtos
 import com.spark.app.R
 import com.spark.app.analytics.DataPair
-import com.spark.app.ModuleConfigProtos
-import com.spark.app.android.*
+import com.spark.app.android.GeeksvilleApplication
+import com.spark.app.android.Logging
+import com.spark.app.android.getBackgroundPermissions
+import com.spark.app.android.getBluetoothPermissions
+import com.spark.app.android.gpsDisabled
+import com.spark.app.android.hasBackgroundPermission
+import com.spark.app.android.hasCompanionDeviceApi
+import com.spark.app.android.hasGps
+import com.spark.app.android.hideKeyboard
+import com.spark.app.android.isGooglePlayAvailable
+import com.spark.app.android.permissionMissing
+import com.spark.app.android.rationaleDialog
+import com.spark.app.android.shouldShowRequestPermissionRationale
 import com.spark.app.databinding.SettingsFragmentBinding
 import com.spark.app.model.BTScanModel
 import com.spark.app.model.BluetoothViewModel
 import com.spark.app.model.UIViewModel
 import com.spark.app.model.getInitials
-import com.spark.app.repository.location.LocationRepository
 import com.spark.app.service.MeshService
 import com.spark.app.service.SoftwareUpdateService
 import com.spark.app.util.exceptionToSnackbar
 import com.spark.app.util.getAssociationResult
 import com.spark.app.util.onEditorAction
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 //@AndroidEntryPoint
 class SettingsFragment : ScreenFragment("Settings"), Logging {
@@ -50,8 +59,8 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
     private val bluetoothViewModel: BluetoothViewModel by activityViewModels()
     private val model: UIViewModel by activityViewModels()
 
-   /* @Inject
-    internal lateinit var locationRepository: LocationRepository*/
+    /* @Inject
+     internal lateinit var locationRepository: LocationRepository*/
 
     private val hasGps by lazy { requireContext().hasGps() }
     private val hasCompanionDeviceApi by lazy { requireContext().hasCompanionDeviceApi() }
@@ -96,7 +105,7 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
             val progress = service.updateStatus
 
             binding.updateFirmwareButton.isEnabled = enable &&
-                (progress < 0) // if currently doing an upgrade disable button
+                    (progress < 0) // if currently doing an upgrade disable button
 
             if (progress >= 0) {
                 binding.updateProgressBar.progress = progress // update partial progress
@@ -112,10 +121,12 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
                         binding.scanStatusText.setText(R.string.update_successful)
                         binding.updateProgressBar.visibility = View.GONE
                     }
+
                     SoftwareUpdateService.ProgressNotStarted -> {
                         // Do nothing - because we don't want to overwrite the status text in this case
                         binding.updateProgressBar.visibility = View.GONE
                     }
+
                     else -> {
                         GeeksvilleApplication.analytics.track(
                             "firmware_update",
@@ -176,6 +187,7 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
         when (connectionState) {
             MeshService.ConnectionState.CONNECTED ->
                 if (region.number == 0) R.string.must_set_region else R.string.connected_to
+
             MeshService.ConnectionState.DISCONNECTED -> R.string.not_connected
             MeshService.ConnectionState.DEVICE_SLEEP -> R.string.connected_sleeping
             else -> null
@@ -335,9 +347,9 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
         }
 
         // Observe receivingLocationUpdates state and update provideLocationCheckbox
-  /*      locationRepository.receivingLocationUpdates.asLiveData().observe(viewLifecycleOwner) {
-            binding.provideLocationCheckbox.isChecked = it
-        }*/
+        /*      locationRepository.receivingLocationUpdates.asLiveData().observe(viewLifecycleOwner) {
+                  binding.provideLocationCheckbox.isChecked = it
+              }*/
 
         binding.provideLocationCheckbox.setOnCheckedChangeListener { view, isChecked ->
             // Don't check the box until the system setting changes
@@ -355,11 +367,11 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
                         }
                         .setPositiveButton(getString(R.string.accept)) { _, _ ->
                             // Make sure we have location permission (prerequisite)
-                            if (!requireContext().hasLocationPermission()) {
-                                requestLocationAndBackgroundLauncher.launch(requireContext().getLocationPermissions())
-                            } else {
-                                requestBackgroundAndCheckLauncher.launch(requireContext().getBackgroundPermissions())
-                            }
+//                            if (!requireContext().hasLocationPermission()) {
+//                                requestLocationAndBackgroundLauncher.launch(requireContext().getLocationPermissions())
+//                            } else {
+//                                requestBackgroundAndCheckLauncher.launch(requireContext().getBackgroundPermissions())
+//                            }
                         }
                         .show()
             }
@@ -538,12 +550,13 @@ class SettingsFragment : ScreenFragment("Settings"), Logging {
         }
     }
 
-    private fun checkBTEnabled(): Boolean = (bluetoothViewModel.enabled.value == true).also { enabled ->
-        if (!enabled) {
-            warn("Telling user bluetooth is disabled")
-            model.showSnackbar(R.string.bluetooth_disabled)
+    private fun checkBTEnabled(): Boolean =
+        (bluetoothViewModel.enabled.value == true).also { enabled ->
+            if (!enabled) {
+                warn("Telling user bluetooth is disabled")
+                model.showSnackbar(R.string.bluetooth_disabled)
+            }
         }
-    }
 
     private val updateProgressFilter = IntentFilter(SoftwareUpdateService.ACTION_UPDATE_PROGRESS)
 

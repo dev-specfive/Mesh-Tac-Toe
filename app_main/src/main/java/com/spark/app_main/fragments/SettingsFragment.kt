@@ -20,9 +20,7 @@ import com.spark.app.android.BuildUtils.debug
 import com.spark.app.android.BuildUtils.info
 import com.spark.app.android.BuildUtils.warn
 import com.spark.app.android.GeeksvilleApplication
-import com.spark.app.android.getBackgroundPermissions
 import com.spark.app.android.getBluetoothPermissions
-import com.spark.app.android.hasBackgroundPermission
 import com.spark.app.android.hasCompanionDeviceApi
 import com.spark.app.android.hideKeyboard
 import com.spark.app.android.isGooglePlayAvailable
@@ -217,17 +215,6 @@ class SettingsFragment : ScreenFragment("Nearby") {
                 }
             }
 
-        val requestLocationAndBackgroundLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                if (permissions.entries.all { it.value }) {
-                    // Older versions of android only need Location permission
-                    if (!requireContext().hasBackgroundPermission())
-                        requestBackgroundAndCheckLauncher.launch(requireContext().getBackgroundPermissions())
-                } else {
-                    debug("User denied location permission")
-                    model.showSnackbar(getString(R.string.why_background_required))
-                }
-            }
 
         // init our region spinner
         val spinner = binding.regionSpinner

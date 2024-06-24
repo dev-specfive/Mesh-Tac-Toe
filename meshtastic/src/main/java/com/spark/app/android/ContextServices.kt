@@ -12,8 +12,8 @@ import android.location.LocationManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.spark.app.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.spark.app.R
 
 /**
  * @return null on platforms without a BlueTooth driver (i.e. the emulator)
@@ -127,7 +127,7 @@ fun Context.getBluetoothPermissions(): Array<String> {
         perms.add(Manifest.permission.BLUETOOTH_SCAN)
         perms.add(Manifest.permission.BLUETOOTH_CONNECT)
     } else if (!hasCompanionDeviceApi()) {
-        perms.add(Manifest.permission.ACCESS_FINE_LOCATION)
+//        perms.add(Manifest.permission.ACCESS_FINE_LOCATION)
     }
     return getMissingPermissions(perms)
 }
@@ -150,25 +150,25 @@ fun Context.hasCameraPermission() = getCameraPermissions().isEmpty()
 /**
  * Location permission (or empty if we already have what we need)
  */
-fun Context.getLocationPermissions(): Array<String> {
-    val perms = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-
-    return getMissingPermissions(perms)
-}
+//fun Context.getLocationPermissions(): Array<String> {
+//    val perms = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+//
+//    return getMissingPermissions(perms)
+//}
 
 /** @return true if the user already has location permission */
-fun Context.hasLocationPermission() = getLocationPermissions().isEmpty()
+//fun Context.hasLocationPermission() = getLocationPermissions().isEmpty()
 
 /**
  * A list of missing background location permissions (or empty if we already have what we need)
  */
 fun Context.getBackgroundPermissions(): Array<String> {
-    val perms = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+//    val perms = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+//
+//    if (android.os.Build.VERSION.SDK_INT >= 29) // only added later
+//        perms.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
 
-    if (android.os.Build.VERSION.SDK_INT >= 29) // only added later
-        perms.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-
-    return getMissingPermissions(perms)
+    return getMissingPermissions(emptyList())
 }
 
 /** @return true if the user already has background location permission */

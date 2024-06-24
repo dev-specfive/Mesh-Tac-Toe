@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.spark.app.R
-import com.spark.app.ui.map.MapFragment
 
 enum class MainTab(
     @StringRes
@@ -28,11 +27,11 @@ enum class MainTab(
         R.drawable.ic_twotone_people_24,
         UsersFragment()
     ),
-    MAP(
-        R.string.main_tab_lbl_map,
-        R.drawable.ic_twotone_map_24,
-        MapFragment()
-    ),
+//    MAP(
+//        R.string.main_tab_lbl_map,
+//        R.drawable.ic_twotone_map_24,
+//        MapFragment()
+//    ),
     CHANNEL(
         R.string.main_tab_lbl_channel,
         R.drawable.ic_twotone_contactless_24,
