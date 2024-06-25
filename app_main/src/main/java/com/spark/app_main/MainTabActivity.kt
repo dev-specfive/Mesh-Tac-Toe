@@ -1,5 +1,6 @@
 package com.spark.app_main
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.RemoteException
 import android.text.method.LinkMovementMethod
+import android.view.MenuInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,6 +19,9 @@ import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
@@ -61,6 +66,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainTabActivity : AppCompatActivity(), Logging {
@@ -165,7 +171,9 @@ class MainTabActivity : AppCompatActivity(), Logging {
             }
         }
 
-
+        binding.ivLogoIcon.setOnClickListener { v ->
+            showPopupMenu(v)
+        }
     }
 
     private fun showExitConfirmationDialog(onBack: () -> Unit) {
@@ -556,4 +564,40 @@ class MainTabActivity : AppCompatActivity(), Logging {
         navController.navigate(R.id.gamepad_fragment)
     }
 
+    @SuppressLint("RestrictedApi")
+    private fun showPopupMenu(view: View) {
+        val wrapper: Context = ContextThemeWrapper(view.context, R.style.CustomPopupMenu)
+        val popupMenu = PopupMenu(wrapper, view)
+
+        val inflater: MenuInflater = popupMenu.menuInflater
+        inflater.inflate(R.menu.menu_items, popupMenu.menu)
+
+        if (popupMenu.menu is MenuBuilder) {
+            val menuBuilder = popupMenu.menu as MenuBuilder
+            menuBuilder.setOptionalIconsVisible(true)
+        }
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_privacy_policy -> {
+                    openWebPage(getString(R.string.privacy_policy))
+                    true
+                }
+
+                R.id.action_terms_conditions -> {
+                    openWebPage(getString(R.string.terms_and_conditions))
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        popupMenu.show()
+    }
+
+    private fun openWebPage(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
 }

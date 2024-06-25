@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_privacy_policy"
+        android:icon="@drawable/ic_open_new_tab"
+        android:title="Privacy Policy" />
+    <item
+        android:id="@+id/action_terms_conditions"
+        android:icon="@drawable/ic_open_new_tab"
+        android:title="Terms and Conditions" />
+</menu>
