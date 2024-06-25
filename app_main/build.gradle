@@ -24,7 +24,7 @@ android {
         applicationId "com.spark.app_main"
         minSdkVersion 24 // The oldest emulator image I have tried is 22 (though 21 probably works)
         targetSdk 33
-        versionCode 2 // format is Mmmss (where M is 1+the numeric major number
+        versionCode 3 // format is Mmmss (where M is 1+the numeric major number
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
