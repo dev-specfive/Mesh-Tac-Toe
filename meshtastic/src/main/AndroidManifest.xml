@@ -51,6 +51,7 @@
     <!-- We run our mesh code as a foreground service - FIXME, find a way to stop doing this -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <!-- Needed to open our bluetooth connection to our paired device (after reboot) -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
