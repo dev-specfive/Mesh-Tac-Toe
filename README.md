@@ -17,10 +17,10 @@ you!
 alt="Get it on F-Droid"
 width="49%">](https://apt.izzysoft.de/fdroid/repo)
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-alt="Download at https://play.google.com/store/apps/details?id=com.spark.app]"
-width="49%">](https://play.google.com/store/apps/details?id=com.spark.app&referrer=utm_source%3Dgithub-android-readme)
+alt="Download at https://play.google.com/store/apps/details?id=com.specfive.app]"
+width="49%">](https://play.google.com/store/apps/details?id=com.specfive.app&referrer=utm_source%3Dgithub-android-readme)
 
-If you want to join the Play Store beta program go to [this URL](https://play.google.com/apps/testing/com.spark.app) and opt-in to the alpha/beta test.
+If you want to join the Play Store beta program go to [this URL](https://play.google.com/apps/testing/com.specfive.app) and opt-in to the alpha/beta test.
 If you encounter any problems or have questions, [post in the forum](https://meshtastic.discourse.group/) and we'll help.
 
 However, if you must use 'raw' APKs you can get them from our [github releases](https://github.com/meshtastic/Meshtastic-Android/releases). This is not recommended because if you manually install an APK it will not automatically update.
@@ -54,7 +54,7 @@ cp ./app/google-services-example.json ./app/google-services.json
 - on dev devices
 
 ```bash
-adb shell setprop debug.firebase.analytics.app com.spark.app
+adb shell setprop debug.firebase.analytics.app com.specfive.app
 adb shell setprop log.tag.FirebaseCrashlytics DEBUG
 ```
 

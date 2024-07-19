@@ -11,7 +11,7 @@ import "meshtastic/module_config.proto";
 option csharp_namespace = "Meshtastic.Protobufs";
 option go_package = "github.com/meshtastic/go/generated";
 option java_outer_classname = "DeviceOnly";
-option java_package = "com.spark.app";
+option java_package = "com.specfive.app";
 option swift_prefix = "";
 
 /*

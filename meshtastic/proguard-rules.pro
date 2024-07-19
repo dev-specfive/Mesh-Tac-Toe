@@ -27,7 +27,7 @@
 
 # Needed for protobufs
 -keepclassmembers class * extends com.google.protobuf.GeneratedMessageV3 { <fields>; }
--keep class com.spark.app.**{*;}
+-keep class com.specfive.app.**{*;}
 -keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { <fields>; }
 
 # mil.nga.mgrs

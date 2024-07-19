@@ -16,7 +16,7 @@ unMock {
 
 
 android {
-    namespace 'com.spark.app'
+    namespace 'com.specfive.app'
 
 
     compileSdk 34

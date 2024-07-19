@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:xxx:android:1111",
         "android_client_info": {
-          "package_name": "com.spark.app"
+          "package_name": "com.specfive.app"
         }
       },
       "oauth_client": [

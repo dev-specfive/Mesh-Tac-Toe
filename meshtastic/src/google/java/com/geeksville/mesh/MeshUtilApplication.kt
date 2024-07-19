@@ -1,11 +1,11 @@
-package com.spark.app
+package com.specfive.app
 
 import android.os.Debug
-import com.spark.app.android.AppPrefs
-import com.spark.app.android.BuildUtils.isEmulator
-import com.spark.app.android.GeeksvilleApplication
-import com.spark.app.android.Logging
-import com.spark.app.util.Exceptions
+import com.specfive.app.android.AppPrefs
+import com.specfive.app.android.BuildUtils.isEmulator
+import com.specfive.app.android.GeeksvilleApplication
+import com.specfive.app.android.Logging
+import com.specfive.app.util.Exceptions
 import com.google.firebase.crashlytics.crashlytics
 import com.google.firebase.Firebase
 import dagger.hilt.android.HiltAndroidApp
