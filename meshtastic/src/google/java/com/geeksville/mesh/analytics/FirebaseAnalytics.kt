@@ -1,9 +1,9 @@
-package com.spark.app.analytics
+package com.specfive.app.analytics
 
 import android.content.Context
 import android.os.Bundle
-import com.spark.app.android.AppPrefs
-import com.spark.app.android.Logging
+import com.specfive.app.android.AppPrefs
+import com.specfive.app.android.Logging
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
 import com.google.firebase.analytics.logEvent

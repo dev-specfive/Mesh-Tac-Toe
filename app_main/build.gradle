@@ -16,12 +16,12 @@ unMock {
 
 
 android {
-    namespace 'com.spark.app_main'
+    namespace 'com.specfive.meshtactoe'
 
 
     compileSdk 34
     defaultConfig {
-        applicationId "com.spark.app_main"
+        applicationId "com.specfive.meshtactoe"
         minSdkVersion 24 // The oldest emulator image I have tried is 22 (though 21 probably works)
         targetSdk 34
         versionCode 1 // format is Mmmss (where M is 1+the numeric major number

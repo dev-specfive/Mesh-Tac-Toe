@@ -105,20 +105,20 @@
 
         <!-- we need bind job service for oreo -->
         <service
-            android:name="com.spark.app.service.SoftwareUpdateService"
+            android:name="com.specfive.app.service.SoftwareUpdateService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <!-- This is the public API for doing mesh radio operations from android apps -->
         <service
-            android:name="com.spark.app.service.MeshService"
+            android:name="com.specfive.app.service.MeshService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="connectedDevice"
             tools:ignore="ExportedActivity">
             <intent-filter>
-                <action android:name="com.spark.app.Service" />
+                <action android:name="com.specfive.app.Service" />
             </intent-filter>
         </service>
 
@@ -137,7 +137,7 @@
             tools:replace="screenOrientation" />
 
         <!--        <activity-->
-        <!--            android:name="com.spark.app.MainActivity"-->
+        <!--            android:name="com.specfive.app.MainActivity"-->
         <!--            android:exported="true"-->
         <!--            android:launchMode="singleInstance"-->
         <!--            android:screenOrientation="unspecified"-->
@@ -179,7 +179,7 @@
         <!--        </activity>-->
 
         <receiver
-            android:name="com.spark.app.service.BootCompleteReceiver"
+            android:name="com.specfive.app.service.BootCompleteReceiver"
             android:exported="false">
             <!-- handle boot events -->
             <intent-filter>
@@ -191,7 +191,7 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
 
                 <!-- for testing -->
-                <action android:name="com.spark.app.SIM_BOOT" />
+                <action android:name="com.specfive.app.SIM_BOOT" />
             </intent-filter>
 
             <!-- Also restart our service if the app gets upgraded -->
@@ -200,7 +200,7 @@
                 <!-- I was using PACKAGE_REPLACED, but MY_PACKAGE_REPLACED is newer and seems cleaner
                 <data
                     android:scheme="package"
-                    android:path="com.spark.app" /> -->
+                    android:path="com.specfive.app" /> -->
             </intent-filter>
         </receiver>
 

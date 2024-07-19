@@ -1,4 +1,4 @@
-package com.spark.app.android
+package com.specfive.app.android
 
 import android.app.Application
 import android.content.Context
@@ -6,8 +6,8 @@ import android.content.SharedPreferences
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import com.spark.app.analytics.AnalyticsProvider
-import com.spark.app.util.exceptionReporter
+import com.specfive.app.analytics.AnalyticsProvider
+import com.specfive.app.util.exceptionReporter
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailabilityLight
 import com.suddenh4x.ratingdialog.AppRating
@@ -64,7 +64,7 @@ open class GeeksvilleApplication : Application(), Logging {
     override fun onCreate() {
         super.onCreate()
 
-        val firebaseAnalytics = com.spark.app.analytics.FirebaseAnalytics(this)
+        val firebaseAnalytics = com.specfive.app.analytics.FirebaseAnalytics(this)
         analytics = firebaseAnalytics
 
         // Set analytics per prefs

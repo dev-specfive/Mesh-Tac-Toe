@@ -5,7 +5,7 @@ package meshtastic;
 option csharp_namespace = "Meshtastic.Protobufs";
 option go_package = "github.com/meshtastic/go/generated";
 option java_outer_classname = "RemoteHardware";
-option java_package = "com.spark.app";
+option java_package = "com.specfive.app";
 option swift_prefix = "";
 
 /*
