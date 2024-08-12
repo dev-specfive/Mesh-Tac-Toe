@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+ <!--   <item
+        android:id="@+id/gamepad_fragment"
+        android:title="@string/nearby"
+        android:icon="@drawable/gamepad"/>-->
+    <item
+        android:id="@+id/nearby_fragment"
+        android:title="@string/nearby"
+        android:icon="@drawable/nearby_devices"/>
+
+    <item
+        android:id="@+id/message_fragment"
+        android:title="@string/message_txt"
+        android:icon="@drawable/chat"/>
+
+    <item
+        android:id="@+id/settings_fragment"
+        android:title="@string/settings"
+        android:icon="@drawable/settings"/>
+
+ <item
+        android:id="@+id/channel_fragment"
+        android:title="@string/channel"
+        android:icon="@drawable/ic_twotone_contactless_24"/>
+
+ <item
+        android:id="@+id/shop_fragment"
+        android:title="@string/shop"
+        android:icon="@drawable/baseline_shopping_cart_24"/>
+
+</menu>

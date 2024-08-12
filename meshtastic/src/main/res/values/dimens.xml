@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="message_offset">64dp</dimen>
+</resources>
