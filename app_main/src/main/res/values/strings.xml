@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Spec5 MeshTacToe</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="reject_invite">Reject</string>
+    <string name="shop">Shop</string>
+    <string name="privacy_policy">https://specfive.com/policies/privacy-policy</string>
+    <string name="terms_and_conditions">https://specfive.com/policies/terms-of-service</string>
+</resources>

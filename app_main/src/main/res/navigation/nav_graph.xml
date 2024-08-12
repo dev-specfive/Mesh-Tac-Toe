@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nearby_fragment">
+
+
+    <fragment
+        android:id="@+id/nearby_fragment"
+        android:name="com.specfive.meshtactoe.fragments.NearbyDevicesFragment"
+        android:label="nearby"
+        tools:layout="@layout/fragment_nearby_devices" />
+    <fragment
+        android:id="@+id/message_fragment"
+        android:name="com.specfive.meshtactoe.fragments.MessagesFragment"
+        android:label="message"
+        tools:layout="@layout/messages_invites_fragment" />
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.specfive.meshtactoe.fragments.SettingsFragment"
+        android:label="settings"
+        tools:layout="@layout/connectivity_settings_fragment" />
+    <fragment
+        android:id="@+id/channel_fragment"
+        android:name="com.specfive.app.ui.ChannelFragment"
+        android:label="ChannelFragment" />
+    <fragment
+        android:id="@+id/gamepad_fragment"
+        android:name="com.specfive.meshtactoe.fragments.GamePlayFragment"
+        android:label="gamepad"
+        tools:layout="@layout/fragment_new_tik_tac_toe_game" />
+    <fragment
+        android:id="@+id/shop_fragment"
+        android:name="com.specfive.meshtactoe.fragments.ShopFragment"
+        android:label="ShopFragment" />
+</navigation>
